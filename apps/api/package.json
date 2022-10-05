@@ -15,6 +15,7 @@
         "concurrently": "^7.4.0",
         "eslint": "7.32.0",
         "eslint-config-custom": "*",
+        "jest": "^29.1.2",
         "nodemon": "^2.0.20",
         "tsconfig": "*",
         "typescript": "^4.5.3"

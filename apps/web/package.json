@@ -17,12 +17,18 @@
     },
     "devDependencies": {
         "@babel/core": "^7.0.0",
-        "eslint": "7.32.0",
-        "eslint-config-custom": "*",
-        "next-transpile-modules": "9.0.0",
-        "tsconfig": "*",
         "@types/node": "^17.0.12",
         "@types/react": "18.0.17",
+        "@types/react-dom": "^18.0.6",
+        "autoprefixer": "^10.4.12",
+        "eslint": "7.32.0",
+        "eslint-config-custom": "*",
+        "jest": "^29.1.2",
+        "next-transpile-modules": "9.0.0",
+        "postcss": "^8.4.17",
+        "tailwind-config": "*",
+        "tailwindcss": "^3.1.8",
+        "tsconfig": "*",
         "typescript": "^4.5.3"
     }
 }
