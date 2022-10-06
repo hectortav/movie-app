@@ -3,19 +3,22 @@
 ## TODO
 
 -   [x] Define requirements and functionality
+-   [x] Create user stories
 -   [x] Define tech stack
 -   [x] Break into subproblems
 -   [x] Define DB schema
+-   [ ] Describe API
 -   [x] Create & configure monorepo
 -   [x] Add and configure tools to enforce code quality
 -   [ ] Create minor CI/CD pipeline
 -   [ ] Transform requirements to unit tests
 -   [ ] Write code to satisfy tests
+-   [ ] Performance tunning
 -   [ ] Refactor
 -   [ ] Deploy
 -   [ ] Write report
 
-## Requirements and functionality
+## Define requirements and functionality
 
 -   Users can share movies
 -   Each movie has
@@ -25,9 +28,9 @@
     -   User that submitted (Reference)
 -   Users can like or hate movies
 -   Can view page unregistered
-    -   View movies
-    -   Like or hate movie
-    -   Voting can be changed and retracted
+-   View movies
+-   Like or hate movie
+-   Voting can be changed and retracted
 -   MVC framework
 -   Authentication (login/sign up)
 -   Authorization
@@ -43,7 +46,17 @@
 -   Include addition features
 <!-- update movie, user -->
 
-## Tech stack
+## Create user stories
+
+-   As a user, I want to open the Home page, so that I can view movies
+-   As a user, I want to use filters, so that I can sort the movies by positive or negative votes and date
+-   As an unauthenticated\_ user, I want to view buttons, so that I can log in or register.
+-   As an _authenticated_ user, I want to complete a form, so that I can add my movies.
+-   As an _authenticated_ user, I want to vote, so that I can express how I feel for a movie.
+-   As an _authenticated_ user, I want to change vote, so that I can express I changed my mind.
+-   As a user, I want to open a user's page, so that I can see the movies they created.
+
+## Define tech stack
 
 -   TypeScript
 -   Node.js
@@ -63,7 +76,7 @@
 -   Nginx
 -   Digital ocean
 
-## Subproblems
+## Break into subproblems
 
 -   Create express server
 -   Create request from backend to frontend
@@ -81,7 +94,7 @@
 -   Dockerize
 -   Deploy
 
-## DB Schema
+## Define DB schema
 
 ```markdown
 # Table: User
@@ -122,3 +135,7 @@
 | vote      | Boolean         |
 | createdAt | DateTime        |
 | updatedAt | DateTime        |
+
+## Describe API
+
+Describe API with TypeScript types.
