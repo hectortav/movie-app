@@ -1,73 +1,124 @@
-# Turborepo starter
+# Workable assignment
 
-This is an official Yarn v1 starter turborepo.
+## TODO
 
-## What's inside?
+-   [x] Define requirements and functionality
+-   [x] Define tech stack
+-   [x] Break into subproblems
+-   [x] Define DB schema
+-   [x] Create & configure monorepo
+-   [x] Add and configure tools to enforce code quality
+-   [ ] Create minor CI/CD pipeline
+-   [ ] Transform requirements to unit tests
+-   [ ] Write code to satisfy tests
+-   [ ] Refactor
+-   [ ] Deploy
+-   [ ] Write report
 
-This turborepo uses [Yarn](https://classic.yarnpkg.com/) as a package manager. It includes the following packages/apps:
+## Requirements and functionality
 
-### Apps and Packages
+-   Users can share movies
+-   Each movie has
+    -   Title
+    -   Description
+    -   Date (createdAt)
+    -   User that submitted (Reference)
+-   Users can like or hate movies
+-   Can view page unregistered
+    -   View movies
+    -   Like or hate movie
+    -   Voting can be changed and retracted
+-   MVC framework
+-   Authentication (login/sign up)
+-   Authorization
+-   Add movies by completing forms
+-   Vote only once for each movie
+-   Cannot vote for the movies they have submitted
+-   View movies and sort them by
+    -   likes
+    -   hates
+    -   date added
+-   View all movies submitted by specific user
+-   Include installation instructions or preferable provide with a running instance
+-   Include addition features
+<!-- update movie, user -->
 
--   `docs`: a [Next.js](https://nextjs.org) app
--   `web`: another [Next.js](https://nextjs.org) app
--   `ui`: a stub React component library shared by both `web` and `docs` applications
--   `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
--   `tsconfig`: `tsconfig.json`s used throughout the monorepo
+## Tech stack
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+-   TypeScript
+-   Node.js
+-   REST
+-   Express
+-   Next.js
+-   React.js
+-   Turborepo
+-   Tailwindcss
+-   PostgreSQL
+-   Redis
+-   Prisma
+-   Jest
+-   Cypress
+-   Docker
+-   Docker compose
+-   Nginx
+-   Digital ocean
 
-### Utilities
+## Subproblems
 
-This turborepo has some additional tools already setup for you:
+-   Create express server
+-   Create request from backend to frontend
+-   Connect & initialize DBs
+-   Create register
+-   Create login
+-   Create session & auth middleware
+-   Auth state frontend
+-   Create movie form
+-   Get all movies
+-   Display all movies
+-   Like/Hate a movie
+-   Sort movies
+-   View movies by user
+-   Dockerize
+-   Deploy
 
--   [TypeScript](https://www.typescriptlang.org/) for static type checking
--   [ESLint](https://eslint.org/) for code linting
--   [Prettier](https://prettier.io) for code formatting
+## DB Schema
 
-### Build
-
-To build all apps and packages, run the following command:
-
+```markdown
+# Table: User
 ```
-cd my-turborepo
-yarn run build
+
+| Column    | Type            |
+| --------- | --------------- |
+| id        | String (unique) |
+| firstname | String          |
+| lastname  | String          |
+| email     | String (unique) |
+| password  | String          |
+| createdAt | DateTime        |
+| updatedAt | DateTime        |
+
+```markdown
+# Table: Movie
 ```
 
-### Develop
+| Column      | Type            |
+| ----------- | --------------- |
+| id          | String (unique) |
+| title       | String (unique) |
+| description | String          |
+| userId      | String (unique) |
+| createdAt   | DateTime        |
+| updatedAt   | DateTime        |
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-yarn run dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+```markdown
+# Table: UserVote
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
--   [Pipelines](https://turborepo.org/docs/core-concepts/pipelines)
--   [Caching](https://turborepo.org/docs/core-concepts/caching)
--   [Remote Caching](https://turborepo.org/docs/core-concepts/remote-caching)
--   [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
--   [Configuration Options](https://turborepo.org/docs/reference/configuration)
--   [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+| Column    | Type            |
+| --------- | --------------- |
+| id        | String (unique) |
+| userId    | String          |
+| movieId   | String          |
+| vote      | Boolean         |
+| createdAt | DateTime        |
+| updatedAt | DateTime        |
