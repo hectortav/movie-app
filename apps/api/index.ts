@@ -1,5 +1,5 @@
 const createServer = async () => {
-    console.log('server')
+    console.log("server")
 }
 
 createServer()
