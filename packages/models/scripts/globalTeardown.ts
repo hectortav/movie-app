@@ -1,4 +1,4 @@
-import prisma from "../lib"
+import { prisma } from "../lib"
 
 const dropAndClose = async (): Promise<void> => {
     console.log("Running global 🌎 teardown")

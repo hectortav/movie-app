@@ -10,14 +10,14 @@ type HydratedMovie = Prisma.MovieGroupByOutputType & {
 
 export const createMovie = async (
     movie: MovieInput
-): Promise<Prisma.MovieGroupByOutputType | undefined> => {
-    return undefined
+): Promise<Prisma.MovieGroupByOutputType | null> => {
+    return null
 }
 
 export const getMovieById = async (
     id: string
-): Promise<HydratedMovie | undefined> => {
-    return undefined
+): Promise<HydratedMovie | null> => {
+    return null
 }
 
 export const getAllMovies = async (): Promise<HydratedMovie[]> => {
@@ -44,8 +44,8 @@ export const getAllMoviesSortedBy = async (
 
 export const updateMovie = async (
     movie: Prisma.MovieUpdateInput & { id: string }
-): Promise<Prisma.MovieGroupByOutputType | undefined> => {
-    return undefined
+): Promise<Prisma.MovieGroupByOutputType | null> => {
+    return null
 }
 
 export const deleteMovie = async (

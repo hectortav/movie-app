@@ -78,21 +78,21 @@
 
 ## Break into subproblems
 
--   Connect & initialize DBs
--   Create express server
--   Create request from backend to frontend
--   Create register
--   Create login
--   Create session & auth middleware
--   Auth state frontend
--   Create movie form
--   Get all movies
--   Display all movies
--   Like/Hate a movie
--   Sort movies
--   View movies by user
--   Dockerize
--   Deploy
+-   [ ] Connect & initialize DBs
+-   [ ] Create express server
+-   [ ] Connect frontend to backend
+-   [ ] Create register
+-   [ ] Create login
+-   [ ] Create session & auth middleware
+-   [ ] Auth state frontend
+-   [ ] Create movie form
+-   [ ] Create movies
+-   [ ] Display all movies
+-   [ ] Like/Hate a movie
+-   [ ] Sort movies
+-   [ ] View movies by user
+-   [ ] Dockerize
+-   [ ] Deploy
 
 ## Define DB schema
 
@@ -119,7 +119,7 @@
 | id          | String (unique) |
 | title       | String (unique) |
 | description | String          |
-| userId      | String (unique) |
+| creatorId   | String (unique) |
 | createdAt   | DateTime        |
 | updatedAt   | DateTime        |
 
@@ -130,7 +130,7 @@
 | Column    | Type            |
 | --------- | --------------- |
 | id        | String (unique) |
-| userId    | String          |
+| creatorId | String          |
 | movieId   | String          |
 | vote      | Boolean         |
 | createdAt | DateTime        |
