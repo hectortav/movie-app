@@ -13,7 +13,7 @@
         "generate": "npx prisma migrate dev --name init",
         "docker:up": "docker-compose up -d",
         "docker:down": "docker-compose down",
-        "test:integration": "yarn docker:up && (./scripts/prismaRunTestMigrations.sh && jest -i);  yarn docker:down",
+        "test:integration": "yarn docker:up && (./scripts/prismaRunTestMigrations.sh && jest -i); ret_code=$?; yarn docker:down; exit $ret_code",
         "test:unit": "echo 'unit tests'",
         "test": "concurrently \"yarn test:unit\" \"yarn test:integration\""
     },

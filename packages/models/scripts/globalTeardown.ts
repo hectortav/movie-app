@@ -1,6 +1,6 @@
 import prisma from "../lib"
 
-export default async () => {
+const dropAndClose = async (): Promise<void> => {
     console.log("Running global 🌎 teardown")
     await prisma.$transaction([
         prisma.userVote.deleteMany(),
@@ -11,3 +11,5 @@ export default async () => {
     await prisma.$disconnect()
     console.log("Cleanup completed 🧹")
 }
+
+export default dropAndClose
