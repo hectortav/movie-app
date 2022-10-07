@@ -10,7 +10,7 @@
 -   [ ] Describe API
 -   [x] Create & configure monorepo
 -   [x] Add and configure tools to enforce code quality
--   [ ] Create minor CI/CD pipeline
+-   [x] Create minor CI/CD pipeline
 -   [ ] Transform requirements to unit tests
 -   [ ] Write code to satisfy tests
 -   [ ] Performance tunning
@@ -78,9 +78,9 @@
 
 ## Break into subproblems
 
+-   Connect & initialize DBs
 -   Create express server
 -   Create request from backend to frontend
--   Connect & initialize DBs
 -   Create register
 -   Create login
 -   Create session & auth middleware
