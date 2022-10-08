@@ -12,7 +12,7 @@ model Movie {
     title       String     @unique @db.VarChar(255)
     description String     @unique
     creatorId   String
-    creator     User       @relation(fields: [creatorId], references: [id])
+    creator     User       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
     votes       UserVote[]
     updatedAt   DateTime   @updatedAt
     createdAt   DateTime   @default(now())
@@ -34,9 +34,9 @@ model UserVote {
     id        String   @id @default(uuid())
     vote      Vote
     userId    String
-    user      User     @relation(fields: [userId], references: [id])
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     movieId   String
-    movie     Movie    @relation(fields: [movieId], references: [id])
+    movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
     updatedAt DateTime @updatedAt
     createdAt DateTime @default(now())
 }
