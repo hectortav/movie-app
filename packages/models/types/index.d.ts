@@ -1,7 +1,12 @@
-import { User, Movie, PrismaClientKnownRequestError } from "@prisma/client"
+import {
+    User,
+    Movie,
+    UserVote,
+    PrismaClientKnownRequestError,
+} from "@prisma/client"
 
 export { PrismaClientKnownRequestError as ClientKnownRequestError } from "@prisma/client"
-export type { User, Movie }
+export type { User, Movie, UserVote }
 
 /* User types start */
 type Optional<Type, Key extends keyof Type> = Omit<Type, Key> &
@@ -28,9 +33,14 @@ export type HydratedMovie = MovieIdInput & {
 export type MovieUpdateInput = Partial<MovieIdInput> & { id: Movie["id"] }
 
 export interface MovieSortProps {
-    likes?: "asc" | "desc"
-    hates?: "asc" | "desc"
-    createdAt?: "asc" | "desc"
+    param: "likes" | "hates" | "createdAt"
+    order: "ASC" | "DESC"
 }
 
 /* Movie types end */
+
+/* UserVote types start */
+export type UserVoteIdInput = Omit<UserVote, "createdAt" | "updatedAt">
+export type UserVoteInput = Optional<UserVoteIdInput, "id">
+export type UserVoteUpdateInput = Pick<UserVote, "id" | "vote">
+/* UserVote types end */

@@ -38,7 +38,6 @@ const movie = {
 }
 
 const movie1 = {
-    id: `${TEST_NUM}_movie_0001`,
     title: "A movie title 1",
     description: "A movie description 1",
     creatorId: user1.id,
@@ -62,6 +61,7 @@ test("create movie without id", async () => {
     expect(dbMovie).not.toEqual(null)
     await prisma.userVote.create({
         data: {
+            id: `${TEST_NUM}_0000`,
             vote: "LIKES",
             userId: user1.id,
             movieId: movie.id,
@@ -69,6 +69,7 @@ test("create movie without id", async () => {
     })
     await prisma.userVote.create({
         data: {
+            id: `${TEST_NUM}_0001`,
             vote: "HATES",
             userId: user.id,
             movieId: movie.id,
@@ -85,38 +86,53 @@ test("get movie by Id", async () => {
     expect(dbMovie?.title).toEqual(movie.title)
 })
 
-test("get all movies with two items", async () => {
+test("get all movies", async () => {
     const dbMovies = await getAllMovies()
     expect(dbMovies?.length).toEqual(2)
 })
 
 test("get all movies sort by Likes descending", async () => {
-    const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({ likes: "desc" })
+    const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({
+        param: "likes",
+        order: "DESC",
+    })
+
     expect(dbMovies1).not.toEqual(null)
     expect(dbMovies0.likes).toBeGreaterThanOrEqual(dbMovies1.likes)
 })
 
 test("get all movies sort by Likes ascending", async () => {
-    const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({ likes: "asc" })
+    const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({
+        param: "likes",
+        order: "ASC",
+    })
+
     expect(dbMovies1).not.toEqual(null)
     expect(dbMovies1.likes).toBeGreaterThanOrEqual(dbMovies0.likes)
 })
 
 test("get all movies sort by Hates descending", async () => {
-    const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({ hates: "desc" })
+    const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({
+        param: "hates",
+        order: "DESC",
+    })
     expect(dbMovies1).not.toEqual(null)
     expect(dbMovies0.hates).toBeGreaterThanOrEqual(dbMovies1.hates)
 })
 
 test("get all movies sort by Hates ascending", async () => {
-    const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({ likes: "asc" })
+    const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({
+        param: "hates",
+        order: "ASC",
+    })
     expect(dbMovies1).not.toEqual(null)
     expect(dbMovies1.hates).toBeGreaterThanOrEqual(dbMovies0.hates)
 })
 
 test("get all movies sort by createdAt descending", async () => {
     const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({
-        createdAt: "desc",
+        param: "createdAt",
+        order: "DESC",
     })
     expect(dbMovies1).not.toEqual(null)
     expect(dbMovies0.createdAt.getTime()).toBeGreaterThanOrEqual(
@@ -126,7 +142,8 @@ test("get all movies sort by createdAt descending", async () => {
 
 test("get all movies sort by createdAt ascending", async () => {
     const [dbMovies0, dbMovies1] = await getAllMoviesSortedBy({
-        createdAt: "asc",
+        param: "createdAt",
+        order: "ASC",
     })
     expect(dbMovies1).not.toEqual(null)
     expect(dbMovies1.createdAt.getTime()).toBeGreaterThanOrEqual(
@@ -148,20 +165,27 @@ test("update movie", async () => {
 })
 
 test("update movie to title that exists", async () => {
-    await shouldThrowWithCode(
-        updateMovie,
-        "P2002",
-        user.password.toUpperCase(),
-        {
-            id: movie.id,
-            title: movie1.title,
-        }
-    )
+    await shouldThrowWithCode(updateMovie, "P2002", {
+        id: movie.id,
+        title: movie1.title,
+    })
 })
 
 test("delete movie", async () => {
-    const res = await deleteMovie(user.id, movie.id)
-    expect(res).toEqual(true)
+    expect(deleteMovie(user.id, movie.id)).resolves.not.toThrowError()
+
+    const uv = await prisma.userVote.findUnique({
+        where: {
+            id: `${TEST_NUM}_0000`,
+        },
+    })
+    const uv1 = await prisma.userVote.findUnique({
+        where: {
+            id: `${TEST_NUM}_0001`,
+        },
+    })
+    expect(uv).toEqual(null)
+    expect(uv1).toEqual(null)
 })
 test("get movie by Id that doesn't exist", async () => {
     const dbMovie = await getMovieById(movie.id)

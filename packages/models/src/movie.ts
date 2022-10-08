@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client"
 import { v4 } from "uuid"
 import {
     Movie,
@@ -7,7 +6,7 @@ import {
     HydratedMovie,
     MovieSortProps,
 } from "../types"
-import { prisma } from "../lib"
+import { prisma, getHydratedMovies } from "../lib"
 
 export const createMovie = async (movie: MovieInput): Promise<Movie | null> => {
     try {
@@ -22,36 +21,6 @@ export const createMovie = async (movie: MovieInput): Promise<Movie | null> => {
     } catch (e: any) {
         throw e
     }
-}
-
-interface RawSqlProps {
-    movieId?: string
-    creatorId?: string
-    limit?: number
-}
-
-const getHydratedMovies = async ({
-    movieId,
-    creatorId,
-    limit,
-}: RawSqlProps = {}): Promise<HydratedMovie[]> => {
-    return prisma.$queryRaw<HydratedMovie[]>`
-        SELECT m.* , 
-            SUM(CASE WHEN v."vote" = 'LIKES' THEN 1 ELSE 0 END) AS likes,
-            SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END) AS hates
-        FROM "Movie" m
-        LEFT JOIN "UserVote" v 
-        ON v."movieId" = m.id
-        ${
-            movieId !== undefined
-                ? Prisma.sql`WHERE m.id = ${movieId}`
-                : creatorId !== undefined
-                ? Prisma.sql`WHERE m.id = ${creatorId}`
-                : Prisma.empty
-        }
-        GROUP BY m.id
-        ${limit !== undefined ? Prisma.sql`LIMIT ${limit}` : Prisma.empty}
-    `
 }
 
 export const getMovieById = async (
@@ -89,10 +58,16 @@ export const getMoviesByCreator = async (
     }
 }
 
-export const getAllMoviesSortedBy = async (
-    props: MovieSortProps
-): Promise<HydratedMovie[]> => {
-    return []
+export const getAllMoviesSortedBy = async ({
+    param,
+    order,
+}: MovieSortProps): Promise<HydratedMovie[]> => {
+    try {
+        return await getHydratedMovies({ sort: { param, order } })
+    } catch (e: any) {
+        /* istanbul ignore next */
+        throw e
+    }
 }
 
 export const updateMovie = async (
@@ -113,6 +88,14 @@ export const updateMovie = async (
 export const deleteMovie = async (
     creatorId: Movie["creatorId"],
     id: Movie["id"]
-): Promise<boolean> => {
-    return false
+): Promise<void> => {
+    try {
+        await prisma.$queryRaw`
+            DELETE FROM "Movie" m
+            WHERE m.id = ${id}
+                AND m."creatorId" = ${creatorId}
+        `
+    } catch (e: any) {
+        throw e
+    }
 }

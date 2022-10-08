@@ -1,5 +1,11 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, Prisma } from "@prisma/client"
 
-const prisma = new PrismaClient()
+let config: Prisma.PrismaClientOptions = {}
+
+if (process.env.NODE_ENV === "development") {
+    config.log = ["query", "warn", "error"]
+    console.log(`SQL log config: ${config.log}`)
+}
+const prisma = new PrismaClient(config)
 
 export default prisma
