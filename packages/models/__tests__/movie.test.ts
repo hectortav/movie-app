@@ -8,6 +8,9 @@ import {
     updateMovie,
     deleteMovie,
 } from "../src"
+import { shouldThrowWithCode } from "./utils"
+
+import { prisma } from "../lib"
 
 const TEST_NUM = 1
 
@@ -31,18 +34,14 @@ const movie = {
     id: `${TEST_NUM}_movie_0000`,
     title: "A movie title",
     description: "A movie description",
-    creator: {
-        connect: { id: user.id },
-    },
+    creatorId: user.id,
 }
 
 const movie1 = {
     id: `${TEST_NUM}_movie_0001`,
     title: "A movie title 1",
     description: "A movie description 1",
-    creator: {
-        connect: { id: user1.id },
-    },
+    creatorId: user1.id,
 }
 
 beforeAll(async () => {
@@ -53,19 +52,32 @@ beforeAll(async () => {
     }
 })
 
-test("create movie 0", async () => {
+test("create movie", async () => {
     const dbMovie = await createMovie(movie)
     expect(dbMovie).not.toEqual(null)
 })
 
-test("create movie 1", async () => {
-    const dbMovie = await createMovie(movie1)
+test("create movie without id", async () => {
+    const dbMovie = await createMovie({ ...movie1, id: undefined })
     expect(dbMovie).not.toEqual(null)
+    await prisma.userVote.create({
+        data: {
+            vote: "LIKES",
+            userId: user1.id,
+            movieId: movie.id,
+        },
+    })
+    await prisma.userVote.create({
+        data: {
+            vote: "HATES",
+            userId: user.id,
+            movieId: movie.id,
+        },
+    })
 })
 
 test("create movie that exists", async () => {
-    const dbMovie = await createMovie(movie)
-    expect(dbMovie).toEqual(null)
+    await shouldThrowWithCode(createMovie, "P2002", movie)
 })
 
 test("get movie by Id", async () => {
@@ -135,6 +147,18 @@ test("update movie", async () => {
     expect(dbMovie?.title).not.toEqual(movie.title)
 })
 
+test("update movie to title that exists", async () => {
+    await shouldThrowWithCode(
+        updateMovie,
+        "P2002",
+        user.password.toUpperCase(),
+        {
+            id: movie.id,
+            title: movie1.title,
+        }
+    )
+})
+
 test("delete movie", async () => {
     const res = await deleteMovie(user.id, movie.id)
     expect(res).toEqual(true)
@@ -145,8 +169,10 @@ test("get movie by Id that doesn't exist", async () => {
 })
 
 test("update movie that doesn't exist", async () => {
-    const dbMovie = await updateMovie({ id: movie.id, title: "Hmmm new title" })
-    expect(dbMovie).toEqual(null)
+    await shouldThrowWithCode(updateMovie, "P2025", {
+        id: movie.id,
+        title: "Hmmm new title",
+    })
 })
 
 test("get movies by creator with no items", async () => {
@@ -157,16 +183,4 @@ test("get movies by creator with no items", async () => {
 test("get all movies with one item", async () => {
     const dbMovies = await getAllMovies()
     expect(dbMovies?.length).toEqual(1)
-})
-
-test("create movie without specifying Id", async () => {
-    const movie2 = {
-        title: "A movie title 2",
-        description: "A movie description 2",
-        creator: {
-            connect: { id: user1.id },
-        },
-    }
-    const dbMovie = await createMovie(movie2)
-    expect(dbMovie).not.toEqual(null)
 })

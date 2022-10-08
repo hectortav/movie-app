@@ -18,7 +18,7 @@ export const createUser = async (user: UserInput): Promise<User | null> => {
     }
 }
 
-export const getUserById = async (id: string): Promise<User | null> => {
+export const getUserById = async (id: User["id"]): Promise<User | null> => {
     try {
         return await prisma.user.findUnique({
             where: { id },
@@ -29,7 +29,9 @@ export const getUserById = async (id: string): Promise<User | null> => {
     }
 }
 
-export const getUserByEmail = async (email: string): Promise<User | null> => {
+export const getUserByEmail = async (
+    email: User["email"]
+): Promise<User | null> => {
     try {
         return await prisma.user.findUnique({
             where: { email },
@@ -105,7 +107,7 @@ export const updateUserWithVerification = async (
     }
 }
 
-export const deleteUser = async (id: string): Promise<void> => {
+export const deleteUser = async (id: User["id"]): Promise<void> => {
     try {
         await prisma.user.delete({
             where: { id },

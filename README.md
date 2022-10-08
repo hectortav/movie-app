@@ -119,7 +119,7 @@
 | id          | String (unique) |
 | title       | String (unique) |
 | description | String          |
-| creatorId   | String (unique) |
+| creatorId   | String          |
 | createdAt   | DateTime        |
 | updatedAt   | DateTime        |
 

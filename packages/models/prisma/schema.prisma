@@ -9,7 +9,7 @@ datasource db {
 
 model Movie {
     id          String     @id @default(uuid())
-    title       String     @db.VarChar(255)
+    title       String     @unique @db.VarChar(255)
     description String     @unique
     creatorId   String
     creator     User       @relation(fields: [creatorId], references: [id])
