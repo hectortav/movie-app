@@ -5,6 +5,9 @@
             "dependsOn": ["lint", "^build"],
             "outputs": ["dist/**", ".next/**"]
         },
+        "controller#build": {
+            "env": ["SESSION_SECRET", "PORT"]
+        },
         "lint": {
             "outputs": []
         },
