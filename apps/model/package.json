@@ -8,10 +8,10 @@
         "build": "tsc --project .",
         "lint": "eslint . --ext .js,.ts --fix",
         "generate": "prisma migrate dev --name init",
-        "migrate": "prisma migrate deploy",
+        "migrate": "./scripts/prismaRunTestMigrations.sh",
         "docker:up": "docker-compose up -d",
         "docker:down": "docker-compose down",
-        "test:integration": "yarn docker:up && (./scripts/prismaRunTestMigrations.sh && jest -c jest.config.int.js int); ret_code=$?; yarn docker:down; exit $ret_code",
+        "test:integration": "yarn docker:up && (yarn migrate && jest -c jest.config.int.js int); ret_code=$?; yarn docker:down; exit $ret_code",
         "test:unit": "jest -c jest.config.unit.js unit",
         "test": "concurrently \"yarn test:unit\" \"yarn test:integration\""
     },

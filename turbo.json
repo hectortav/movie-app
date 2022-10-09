@@ -6,7 +6,7 @@
             "outputs": ["dist/**", ".next/**"]
         },
         "controller#build": {
-            "env": ["SESSION_SECRET", "PORT", "DATABASE_URL"]
+            "env": ["SESSION_SECRET", "PORT", "DATABASE_URL", "REDIS_HOST"]
         },
         "lint": {
             "outputs": []
@@ -15,8 +15,11 @@
             "env": ["DATABASE_URL"],
             "cache": false
         },
+        "migrate": {
+            "env": ["DATABASE_URL"],
+            "cache": false
+        },
         "dev": {
-            "dependsOn": ["generate"],
             "cache": false
         },
         "test": {

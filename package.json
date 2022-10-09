@@ -9,11 +9,15 @@
     "scripts": {
         "build": "turbo run build",
         "generate": "export $(grep -v '^#' .env | xargs) && turbo run generate",
-        "dev": "turbo run dev --parallel",
+        "migrate": "turbo run migrate",
+        "dev:exec": "yarn generate && turbo run dev --parallel",
         "lint": "turbo run lint --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
         "test": "turbo run test --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "dev": "yarn docker:up && (yarn migrate && yarn dev:exec); ret_code=$?; yarn docker:down; exit $ret_code"
     },
     "devDependencies": {
         "eslint-config-custom": "*",
