@@ -6,9 +6,7 @@
         ".": "./dist"
     },
     "scripts": {
-        "dev": "tsc -w",
         "build": "tsc --project .",
-        "start": "",
         "lint": "eslint . --ext .js,.ts --fix",
         "test": "echo 'no tests yet :('"
     },

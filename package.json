@@ -8,6 +8,7 @@
     ],
     "scripts": {
         "build": "turbo run build",
+        "generate": "export $(grep -v '^#' .env | xargs) && turbo run generate",
         "dev": "turbo run dev --parallel",
         "lint": "turbo run lint --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
         "test": "turbo run test --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",

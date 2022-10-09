@@ -2,15 +2,13 @@
     "name": "model",
     "version": "0.0.0",
     "private": true,
-    "exports": {
-        ".": "./dist"
-    },
+    "main": "src/index.ts",
+    "types": "src/index.ts",
     "scripts": {
-        "dev": "tsc -w",
         "build": "tsc --project .",
-        "start": "",
         "lint": "eslint . --ext .js,.ts --fix",
-        "generate": "npx prisma migrate dev --name init",
+        "generate": "prisma migrate dev --name init",
+        "migrate": "prisma migrate deploy",
         "docker:up": "docker-compose up -d",
         "docker:down": "docker-compose down",
         "test:integration": "yarn docker:up && (./scripts/prismaRunTestMigrations.sh && jest -c jest.config.int.js int); ret_code=$?; yarn docker:down; exit $ret_code",

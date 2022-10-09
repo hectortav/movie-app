@@ -36,5 +36,5 @@ yarn-error.log*
 # node.js
 dist
 
-# postgres
-pgdata
+# docker compose
+private

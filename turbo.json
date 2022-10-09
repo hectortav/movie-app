@@ -6,18 +6,22 @@
             "outputs": ["dist/**", ".next/**"]
         },
         "controller#build": {
-            "env": ["SESSION_SECRET", "PORT"]
+            "env": ["SESSION_SECRET", "PORT", "DATABASE_URL"]
         },
         "lint": {
             "outputs": []
         },
+        "generate": {
+            "env": ["DATABASE_URL"],
+            "cache": false
+        },
         "dev": {
+            "dependsOn": ["generate"],
             "cache": false
         },
         "test": {
             "outputs": ["coverage/**"],
             "outputMode": "full"
         }
-    },
-    "globalEnv": ["NODE_ENV"]
+    }
 }
