@@ -8,9 +8,6 @@
         "controller#build": {
             "env": ["SESSION_SECRET", "PORT"]
         },
-        "model#build": {
-            "env": ["DATABASE_URL"]
-        },
         "lint": {
             "outputs": []
         },
