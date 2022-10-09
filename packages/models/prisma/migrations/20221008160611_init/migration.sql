@@ -42,10 +42,10 @@ CREATE TABLE "UserVote" (
 CREATE UNIQUE INDEX "Movie_title_key" ON "Movie"("title");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Movie_description_key" ON "Movie"("description");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "UserVote_userId_movieId_key" ON "UserVote"("userId", "movieId");
 
 -- AddForeignKey
 ALTER TABLE "Movie" ADD CONSTRAINT "Movie_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

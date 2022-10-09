@@ -40,7 +40,5 @@ export interface MovieSortProps {
 /* Movie types end */
 
 /* UserVote types start */
-export type UserVoteIdInput = Omit<UserVote, "createdAt" | "updatedAt">
-export type UserVoteInput = Optional<UserVoteIdInput, "id">
-export type UserVoteUpdateInput = Pick<UserVote, "id" | "vote">
+export type UserVoteInput = Omit<UserVote, "id" | "createdAt" | "updatedAt">
 /* UserVote types end */

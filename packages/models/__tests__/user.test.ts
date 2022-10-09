@@ -10,13 +10,13 @@ import {
 } from "../src"
 import { shouldThrowWithCode } from "./utils"
 
-const TEST_NUM = 0
+const TEST_ID = "user"
 
 const user = {
-    id: `${TEST_NUM}_user_0000`,
+    id: `${TEST_ID}_user_0000`,
     firstname: "Jane",
     lastname: "Doe",
-    email: `janedoe${TEST_NUM}@gmail.com`,
+    email: `janedoe${TEST_ID}@gmail.com`,
     password: "thisismypassword",
 }
 

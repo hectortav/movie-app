@@ -96,6 +96,7 @@ export const deleteMovie = async (
                 AND m."creatorId" = ${creatorId}
         `
     } catch (e: any) {
+        /* istanbul ignore next */
         throw e
     }
 }

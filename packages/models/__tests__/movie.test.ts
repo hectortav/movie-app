@@ -7,31 +7,32 @@ import {
     getAllMoviesSortedBy,
     updateMovie,
     deleteMovie,
+    deleteUser,
 } from "../src"
 import { shouldThrowWithCode } from "./utils"
 
 import { prisma } from "../lib"
 
-const TEST_NUM = 1
+const TEST_ID = "movie"
 
 const user = {
-    id: `${TEST_NUM}_user_0000`,
+    id: `${TEST_ID}_user_0000`,
     firstname: "Jane",
     lastname: "Doe",
-    email: `janedoe${TEST_NUM}@gmail.com`,
+    email: `janedoe${TEST_ID}@gmail.com`,
     password: "thisismypassword",
 }
 
 const user1 = {
-    id: `${TEST_NUM}_user_0001`,
+    id: `${TEST_ID}_user_0001`,
     firstname: "John",
     lastname: "Doe",
-    email: `johndoe${TEST_NUM}@gmail.com`,
+    email: `johndoe${TEST_ID}@gmail.com`,
     password: "thisismypassword",
 }
 
 const movie = {
-    id: `${TEST_NUM}_movie_0000`,
+    id: `${TEST_ID}_movie_0000`,
     title: "A movie title",
     description: "A movie description",
     creatorId: user.id,
@@ -45,9 +46,9 @@ const movie1 = {
 
 beforeAll(async () => {
     try {
-        return Promise.all([createUser(user), createUser(user1)])
+        return await Promise.all([createUser(user), createUser(user1)])
     } catch (e) {
-        throw new Error("Could not create user")
+        throw new Error("Could not create users")
     }
 })
 
@@ -61,7 +62,7 @@ test("create movie without id", async () => {
     expect(dbMovie).not.toEqual(null)
     await prisma.userVote.create({
         data: {
-            id: `${TEST_NUM}_0000`,
+            id: `${TEST_ID}_0000`,
             vote: "LIKES",
             userId: user1.id,
             movieId: movie.id,
@@ -69,7 +70,7 @@ test("create movie without id", async () => {
     })
     await prisma.userVote.create({
         data: {
-            id: `${TEST_NUM}_0001`,
+            id: `${TEST_ID}_0001`,
             vote: "HATES",
             userId: user.id,
             movieId: movie.id,
@@ -88,7 +89,7 @@ test("get movie by Id", async () => {
 
 test("get all movies", async () => {
     const dbMovies = await getAllMovies()
-    expect(dbMovies?.length).toEqual(2)
+    expect(dbMovies?.length).toBeGreaterThanOrEqual(2)
 })
 
 test("get all movies sort by Likes descending", async () => {
@@ -174,18 +175,12 @@ test("update movie to title that exists", async () => {
 test("delete movie", async () => {
     expect(deleteMovie(user.id, movie.id)).resolves.not.toThrowError()
 
-    const uv = await prisma.userVote.findUnique({
+    const uv = await prisma.userVote.findMany({
         where: {
-            id: `${TEST_NUM}_0000`,
+            movieId: movie.id,
         },
     })
-    const uv1 = await prisma.userVote.findUnique({
-        where: {
-            id: `${TEST_NUM}_0001`,
-        },
-    })
-    expect(uv).toEqual(null)
-    expect(uv1).toEqual(null)
+    expect(uv.length).toEqual(0)
 })
 test("get movie by Id that doesn't exist", async () => {
     const dbMovie = await getMovieById(movie.id)
@@ -204,7 +199,10 @@ test("get movies by creator with no items", async () => {
     expect(dbMovies?.length).toEqual(0)
 })
 
-test("get all movies with one item", async () => {
-    const dbMovies = await getAllMovies()
-    expect(dbMovies?.length).toEqual(1)
+test("delete user with movie", async () => {
+    await expect(deleteUser(user1.id)).resolves.not.toThrowError()
+    const movies = await prisma.movie.findMany({
+        where: { creatorId: user1.id },
+    })
+    expect(movies.length).toEqual(0)
 })
