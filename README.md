@@ -78,7 +78,8 @@
 
 ## Break into subproblems
 
--   [ ] Connect & initialize DBs
+
+-   [x] Connect & initialize DBs
 -   [ ] Create express server
 -   [ ] Connect frontend to backend
 -   [ ] Create register

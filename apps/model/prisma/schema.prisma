@@ -10,7 +10,7 @@ datasource db {
 model Movie {
     id          String     @id @default(uuid())
     title       String     @unique @db.VarChar(255)
-    description String     
+    description String
     creatorId   String
     creator     User       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
     votes       UserVote[]
