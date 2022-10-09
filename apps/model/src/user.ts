@@ -56,12 +56,15 @@ export const verifyUserWithIdPassword = async (
 export const verifyUserWithEmailPassword = async (
     email: User["email"],
     password: User["password"]
-): Promise<boolean> => {
+): Promise<User["id"] | null> => {
     const user = await getUserByEmail(email)
     if (user === null) {
-        return false
+        return null
     }
-    return verify({ hashed: user.password, password })
+    if (await verify({ hashed: user.password, password })) {
+        return user.id
+    }
+    return null
 }
 
 export const updateUser = async (

@@ -7,6 +7,5 @@ server.listen(PORT, (e?: Error) => {
     if (e !== undefined) {
         throw e
     }
-
     console.log(`Server started on port ${PORT} 🚀`)
 })

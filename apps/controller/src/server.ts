@@ -3,7 +3,9 @@ import session from "express-session"
 import cors from "cors"
 import helmet from "helmet"
 import morgan from "morgan"
+import connectRedis from "connect-redis"
 import { userRoute, movieRoute } from "./routes"
+import { redis } from "./lib"
 
 const app = express()
 
@@ -13,10 +15,15 @@ app.use(cors())
 app.use(morgan(process.env.NODE_ENV === "production" ? "tiny" : "dev"))
 app.use(express.json())
 
+const Store = connectRedis(session)
+const store = new Store({
+    client: redis,
+})
+
 app.use(
     session({
         name: "sid",
-        store: undefined,
+        store,
         secret: process.env.SESSION_SECRET as string,
         resave: false,
         saveUninitialized: false,

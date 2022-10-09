@@ -12,9 +12,12 @@
         "migrate": "turbo run migrate",
         "dev:exec": "yarn generate && turbo run dev --parallel",
         "lint": "turbo run lint --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
-        "test": "turbo run test --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
+        "test:exec": "turbo run test --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
+        "test": "yarn docker:up:test && (yarn migrate && yarn test:exec); ret_code=$?; yarn docker:down:test; exit $ret_code",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "prepare": "husky install",
+        "docker:up:test": "docker-compose -f docker-compose.test.yml up -d",
+        "docker:down:test": "docker-compose -f docker-compose.test.yml down",
         "docker:up": "docker-compose up -d",
         "docker:down": "docker-compose down",
         "dev": "yarn docker:up && (yarn migrate && yarn dev:exec); ret_code=$?; yarn docker:down; exit $ret_code"

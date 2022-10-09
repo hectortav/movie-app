@@ -36,7 +36,7 @@ test("verify user with Id", async () => {
 
 test("verify user with Email", async () => {
     const res = await verifyUserWithEmailPassword(user.email, user.password)
-    expect(res).toEqual(true)
+    expect(res).toEqual(user.id)
 })
 
 test("verify user wrong Id", async () => {
@@ -46,7 +46,7 @@ test("verify user wrong Id", async () => {
 
 test("verify user wrong Email", async () => {
     const res = await verifyUserWithEmailPassword("awrongemail", user.password)
-    expect(res).toEqual(false)
+    expect(res).toEqual(null)
 })
 
 test("verify user with Id but wrong password", async () => {
@@ -56,7 +56,7 @@ test("verify user with Id but wrong password", async () => {
 
 test("verify user with Email but wrong password", async () => {
     const res = await verifyUserWithEmailPassword(user.email, "wrond password")
-    expect(res).toEqual(false)
+    expect(res).toEqual(null)
 })
 
 test("create user without Id", async () => {

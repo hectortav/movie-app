@@ -26,5 +26,6 @@
             "outputs": ["coverage/**"],
             "outputMode": "full"
         }
-    }
+    },
+    "globalEnv": ["NODE_ENV"]
 }
