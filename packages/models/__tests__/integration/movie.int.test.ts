@@ -8,10 +8,10 @@ import {
     updateMovie,
     deleteMovie,
     deleteUser,
-} from "../src"
-import { shouldThrowWithCode } from "./utils"
+} from "../../src"
+import { shouldThrowWithCode } from "../utils"
 
-import { prisma } from "../lib"
+import { prisma } from "../../lib"
 
 const TEST_ID = "movie"
 
@@ -173,7 +173,7 @@ test("update movie to title that exists", async () => {
 })
 
 test("delete movie", async () => {
-    expect(deleteMovie(user.id, movie.id)).resolves.not.toThrowError()
+    await expect(deleteMovie(user.id, movie.id)).resolves.not.toThrowError()
 
     const uv = await prisma.userVote.findMany({
         where: {

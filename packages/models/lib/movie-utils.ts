@@ -9,7 +9,7 @@ interface GetHydratedMoviesProps {
     sort?: MovieSortProps
 }
 
-const generateOrderBy = (
+export const generateOrderBy = (
     param: "likes" | "hates" | "createdAt" | undefined,
     order: "ASC" | "DESC" | undefined
 ): Prisma.Sql | undefined => {
@@ -25,6 +25,7 @@ const generateOrderBy = (
                 case "ASC":
                     return Prisma.sql`ORDER BY likes ASC`
                 default:
+                    /* istanbul ignore next */
                     break
             }
         case "hates":
@@ -34,6 +35,7 @@ const generateOrderBy = (
                 case "ASC":
                     return Prisma.sql`ORDER BY hates ASC`
                 default:
+                    /* istanbul ignore next */
                     break
             }
         case "createdAt":
@@ -43,9 +45,11 @@ const generateOrderBy = (
                 case "ASC":
                     return Prisma.sql`ORDER BY "createdAt" ASC`
                 default:
+                    /* istanbul ignore next */
                     break
             }
     }
+    /* istanbul ignore next */
     return Prisma.empty
 }
 

@@ -4,10 +4,9 @@ import {
     deleteUser,
     deleteMovie,
     createUserVote,
-    deleteUserVote,
-} from "../src"
-import { shouldThrowWithCode } from "./utils"
-import { prisma } from "../lib"
+} from "../../src"
+import { shouldThrowWithCode } from "../utils"
+import { prisma } from "../../lib"
 
 const TEST_ID = "user-vote"
 

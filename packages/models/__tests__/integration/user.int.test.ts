@@ -7,8 +7,8 @@ import {
     updateUser,
     updateUserWithVerification,
     deleteUser,
-} from "../src"
-import { shouldThrowWithCode } from "./utils"
+} from "../../src"
+import { shouldThrowWithCode } from "../utils"
 
 const TEST_ID = "user"
 
@@ -117,7 +117,7 @@ test("update user Email with Email that exists", async () => {
 })
 
 test("delete user", async () => {
-    expect(deleteUser(user.id)).resolves.not.toThrowError()
+    await expect(deleteUser(user.id)).resolves.not.toThrowError()
 })
 
 test("get user by Id that doesn't exist", async () => {
