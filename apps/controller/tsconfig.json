@@ -1,0 +1,13 @@
+{
+    "extends": "tsconfig/nodejs.json",
+    "compilerOptions": {
+        "outDir": "dist"
+    },
+    "ts-node": {
+        "compilerOptions": {
+            "module": "commonjs"
+        }
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "exclude": ["node_modules", "dist"]
+}
