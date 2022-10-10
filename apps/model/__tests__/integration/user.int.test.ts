@@ -8,7 +8,7 @@ import {
     updateUserWithVerification,
     deleteUser,
 } from "../../src"
-import { shouldThrowWithCode } from "../utils"
+import { containsField } from "../utils"
 
 const TEST_ID = "user"
 
@@ -21,42 +21,49 @@ const user = {
 }
 
 test("delete user that doesn't exist", async () => {
-    await shouldThrowWithCode(deleteUser, "P2025", user.id)
+    const dbUser = await deleteUser(user.id)
+    expect(containsField(dbUser.errors, "userId")).toEqual(true)
 })
 
 test("create user", async () => {
     const dbUser = await createUser(user)
-    expect(dbUser).not.toEqual(null)
+    expect(dbUser.errors.length).toEqual(0)
 })
 
 test("verify user with Id", async () => {
-    const res = await verifyUserWithIdPassword(user.id, user.password)
-    expect(res).toEqual(true)
+    const dbUser = await verifyUserWithIdPassword(user.id, user.password)
+    expect(dbUser.data).toEqual(true)
 })
 
 test("verify user with Email", async () => {
-    const res = await verifyUserWithEmailPassword(user.email, user.password)
-    expect(res).toEqual(user.id)
+    const dbUser = await verifyUserWithEmailPassword(user.email, user.password)
+    expect(dbUser.data).toEqual(user.id)
 })
 
 test("verify user wrong Id", async () => {
-    const res = await verifyUserWithIdPassword("awrongid", user.password)
-    expect(res).toEqual(false)
+    const dbUser = await verifyUserWithIdPassword("awrongid", user.password)
+    expect(containsField(dbUser.errors, "userId")).toEqual(true)
 })
 
 test("verify user wrong Email", async () => {
-    const res = await verifyUserWithEmailPassword("awrongemail", user.password)
-    expect(res).toEqual(null)
+    const dbUser = await verifyUserWithEmailPassword(
+        "awrongemail",
+        user.password
+    )
+    expect(containsField(dbUser.errors, "email")).toEqual(true)
 })
 
 test("verify user with Id but wrong password", async () => {
-    const res = await verifyUserWithIdPassword(user.id, "wrond password")
-    expect(res).toEqual(false)
+    const dbUser = await verifyUserWithIdPassword(user.id, "wrond password")
+    expect(containsField(dbUser.errors, "password")).toEqual(true)
 })
 
 test("verify user with Email but wrong password", async () => {
-    const res = await verifyUserWithEmailPassword(user.email, "wrond password")
-    expect(res).toEqual(null)
+    const dbUser = await verifyUserWithEmailPassword(
+        user.email,
+        "wrond password"
+    )
+    expect(containsField(dbUser.errors, "password")).toEqual(true)
 })
 
 test("create user without Id", async () => {
@@ -69,22 +76,23 @@ test("create user without Id", async () => {
 })
 
 test("create user that exists", async () => {
-    await shouldThrowWithCode(createUser, "P2002", user)
+    const dbUser = await createUser(user)
+    expect(containsField(dbUser.errors, "email")).toEqual(true)
 })
 
 test("get user by Id", async () => {
     const dbUser = await getUserById(user.id)
-    expect(dbUser?.firstname).toEqual(user.firstname)
+    expect(dbUser.data?.firstname).toEqual(user.firstname)
 })
 
 test("get user by Email", async () => {
     const dbUser = await getUserByEmail(user.email)
-    expect(dbUser?.id).toEqual(user.id)
+    expect(dbUser.data?.id).toEqual(user.id)
 })
 
 test("update user", async () => {
     const dbUser = await updateUser({ id: user.id, firstname: "Jane Mary" })
-    expect(dbUser?.firstname).not.toEqual(user.firstname)
+    expect(dbUser.data?.firstname).not.toEqual(user.firstname)
 })
 
 test("update user password", async () => {
@@ -93,7 +101,7 @@ test("update user password", async () => {
         firstname: "Maria",
         newPassword: user.password.toUpperCase(),
     })
-    expect(dbUser?.firstname).toEqual("Maria")
+    expect(dbUser.data?.firstname).toEqual("Maria")
 })
 
 test("update user Email with wrong password", async () => {
@@ -101,33 +109,33 @@ test("update user Email with wrong password", async () => {
         id: user.id,
         email: "email@gmail.com",
     })
-    expect(dbUser).toEqual(null)
+    expect(containsField(dbUser.errors, "password")).toEqual(true)
 })
 
 test("update user Email with Email that exists", async () => {
-    await shouldThrowWithCode(
-        updateUserWithVerification,
-        "P2002",
+    const dbUser = await updateUserWithVerification(
         user.password.toUpperCase(),
         {
             id: user.id,
             email: "randomemail@gmail.com",
         }
     )
+    expect(containsField(dbUser.errors, "email")).toEqual(true)
 })
 
 test("delete user", async () => {
-    await expect(deleteUser(user.id)).resolves.not.toThrowError()
+    const dbUser = await deleteUser(user.id)
+    expect(dbUser.errors.length).toEqual(0)
 })
 
 test("get user by Id that doesn't exist", async () => {
     const dbUser = await getUserById(user.id)
-    expect(dbUser).toEqual(null)
+    expect(containsField(dbUser.errors, "userId")).toEqual(true)
 })
 
 test("get user by Email that doesn't exist", async () => {
     const dbUser = await getUserByEmail(user.email)
-    expect(dbUser).toEqual(null)
+    expect(containsField(dbUser.errors, "email")).toEqual(true)
 })
 
 test("update user Email that doesn't exist", async () => {
@@ -135,12 +143,13 @@ test("update user Email that doesn't exist", async () => {
         id: user.id,
         email: "email@gmail.com",
     })
-    expect(dbUser).toEqual(null)
+    expect(containsField(dbUser.errors, "userId")).toEqual(true)
 })
 
 test("update user that doesn't exist", async () => {
-    await shouldThrowWithCode(updateUser, "P2025", {
+    const dbUser = await updateUser({
         id: user.id,
         firstname: "Jane Mary",
     })
+    expect(containsField(dbUser.errors, "userId")).toEqual(true)
 })

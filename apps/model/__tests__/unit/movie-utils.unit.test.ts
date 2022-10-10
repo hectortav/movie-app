@@ -32,31 +32,3 @@ test("return appropriate Sql for every param order combination", async () => {
         Prisma.sql`ORDER BY \"createdAt\" ASC`
     )
 })
-/*
-export const getHydratedMovies = async ({
-    movieId,
-    creatorId,
-    limit,
-    sort,
-}: GetHydratedMoviesProps = {}): Promise<HydratedMovie[]> => {
-    const orderBy = generateOrderBy(sort?.param, sort?.order)
-    return prisma.$queryRaw<HydratedMovie[]>`
-        SELECT m.* , m."createdAt" AS "createdAt",
-            SUM(CASE WHEN v."vote" = 'LIKES' THEN 1 ELSE 0 END) AS likes,
-            SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END) AS hates
-        FROM "Movie" m
-        LEFT JOIN "UserVote" v 
-        ON v."movieId" = m.id
-        ${
-            movieId !== undefined
-                ? Prisma.sql`WHERE m.id = ${movieId}`
-                : creatorId !== undefined
-                ? Prisma.sql`WHERE m."creatorId" = ${creatorId}`
-                : Prisma.empty
-        }
-        GROUP BY m.id
-        ${orderBy !== undefined ? orderBy : Prisma.empty}
-        ${limit !== undefined ? Prisma.sql`LIMIT ${limit}` : Prisma.empty}
-    `
-}
-*/
