@@ -220,7 +220,6 @@ export const deleteUser = async (
                 field: "userId",
                 message: "unknown error",
             })
-            return response
         }
         return response
     } catch (e: any) {
