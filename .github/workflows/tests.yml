@@ -15,8 +15,12 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 16
+            - run: touch .env
             - run: yarn
             - run: yarn lint
             - run: yarn test
               env:
+                  POSTGRES_USER: postgres
+                  POSTGRES_PASSWORD: postgres
+                  POSTGRES_DB: movies
                   DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/movies"

@@ -8,6 +8,16 @@ import {
 export { PrismaClientKnownRequestError as ClientKnownRequestError } from "@prisma/client"
 export type { User, Movie, UserVote }
 
+interface ModelError {
+    field: string
+    message: string
+}
+
+export interface ModelResponseType<T> {
+    data: T | null
+    errors: ModelError[]
+}
+
 /* User types start */
 type Optional<Type, Key extends keyof Type> = Omit<Type, Key> &
     Partial<Pick<Type, Key>>
