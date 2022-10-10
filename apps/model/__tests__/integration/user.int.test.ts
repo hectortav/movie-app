@@ -8,10 +8,7 @@ import {
     updateUserWithVerification,
     deleteUser,
 } from "../../src"
-import { shouldThrowWithCode } from "../utils"
-
-const containsField = (array: any[], field: string): boolean =>
-    array.findIndex((obj) => obj.field === field) > -1
+import { containsField } from "../utils"
 
 const TEST_ID = "user"
 

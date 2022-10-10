@@ -10,3 +10,6 @@ export const shouldThrowWithCode = async (
         expect((e as any).code).toEqual(code)
     }
 }
+
+export const containsField = (array: any[], field: string): boolean =>
+    array.findIndex((obj) => obj.field === field) > -1

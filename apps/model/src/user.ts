@@ -1,28 +1,57 @@
 import { v4 } from "uuid"
-import { User, UserInput, UserUpdateInput } from "../types"
+import { User, UserInput, UserUpdateInput, ModelResponseType } from "../types"
 import { prisma, verify, hash } from "../lib"
 
-export const createUser = async (user: UserInput): Promise<User | null> => {
+export const createUser = async (
+    user: UserInput
+): Promise<ModelResponseType<User>> => {
+    let response: ModelResponseType<User> = { data: null, errors: [] }
     try {
         if (user.id === undefined) {
             user.id = v4()
         }
-        return await prisma.user.create({
+        const dbUser = await prisma.user.create({
             data: {
                 ...user,
                 password: await hash(user.password),
             },
         })
+        response.data = dbUser
+        if (!dbUser) {
+            response.errors.push({
+                field: "userId",
+                message: "could not create user",
+            })
+        }
+        return response
     } catch (e: any) {
+        if ((e as any).code === "P2002") {
+            response.errors.push({
+                field: "email",
+                message: "email already in use",
+            })
+            return response
+        }
         throw e
     }
 }
 
-export const getUserById = async (id: User["id"]): Promise<User | null> => {
+export const getUserById = async (
+    id: User["id"]
+): Promise<ModelResponseType<User>> => {
+    let response: ModelResponseType<User> = { data: null, errors: [] }
     try {
-        return await prisma.user.findUnique({
+        const dbUser = await prisma.user.findUnique({
             where: { id },
         })
+        response.data = dbUser
+        if (!dbUser) {
+            response.errors.push({
+                field: "userId",
+                message: "user does not exist",
+            })
+        }
+        return response
     } catch (e: any) {
         /* istanbul ignore next */
         throw e
@@ -31,11 +60,20 @@ export const getUserById = async (id: User["id"]): Promise<User | null> => {
 
 export const getUserByEmail = async (
     email: User["email"]
-): Promise<User | null> => {
+): Promise<ModelResponseType<User>> => {
+    let response: ModelResponseType<User> = { data: null, errors: [] }
     try {
-        return await prisma.user.findUnique({
+        const dbUser = await prisma.user.findUnique({
             where: { email },
         })
+        response.data = dbUser
+        if (!dbUser) {
+            response.errors.push({
+                field: "email",
+                message: "user does not exist",
+            })
+        }
+        return response
     } catch (e: any) {
         /* istanbul ignore next */
         throw e
@@ -45,41 +83,99 @@ export const getUserByEmail = async (
 export const verifyUserWithIdPassword = async (
     id: User["id"],
     password: User["password"]
-): Promise<boolean> => {
+): Promise<ModelResponseType<boolean>> => {
+    let response: ModelResponseType<boolean> = { data: false, errors: [] }
     const user = await getUserById(id)
-    if (user === null) {
-        return false
+    response.errors = user.errors
+    if (user.data === null) {
+        response.errors.push({
+            field: "userId",
+            message: "user does not exist",
+        })
+        return response
     }
-    return verify({ hashed: user.password, password })
+    response.data = await verify({ hashed: user.data.password, password })
+    if (response.data === false) {
+        response.errors.push({
+            field: "password",
+            message: "wrong password",
+        })
+    }
+    return response
 }
 
 export const verifyUserWithEmailPassword = async (
     email: User["email"],
     password: User["password"]
-): Promise<User["id"] | null> => {
+): Promise<ModelResponseType<User["id"]>> => {
+    let response: ModelResponseType<User["id"]> = { data: null, errors: [] }
     const user = await getUserByEmail(email)
-    if (user === null) {
-        return null
+    response.errors = user.errors
+    if (user.data === null) {
+        response.errors.push({
+            field: "email",
+            message: "email does not exist",
+        })
+        return response
     }
-    if (await verify({ hashed: user.password, password })) {
-        return user.id
+    if (await verify({ hashed: user.data.password, password })) {
+        response.data = user.data.id
+        return response
+    } else {
+        response.errors.push({
+            field: "password",
+            message: "wrong password",
+        })
     }
-    return null
+    return response
 }
 
-export const updateUser = async (
-    user: UserUpdateInput
-): Promise<User | null> => {
+const _updateUser = async (
+    user: UserUpdateInput & {
+        password?: User["password"]
+        email?: User["email"]
+    }
+): Promise<ModelResponseType<User>> => {
+    let response: ModelResponseType<User> = { data: null, errors: [] }
     try {
-        return await prisma.user.update({
+        const dbUser = await prisma.user.update({
             where: { id: user.id },
             data: {
                 ...user,
             },
         })
+        response.data = dbUser
+        if (!dbUser) {
+            response.errors.push({
+                field: "userId",
+                message: "unknown error",
+            })
+            return response
+        }
+        return response
     } catch (e: any) {
+        if ((e as any).code === "P2025") {
+            response.errors.push({
+                field: "userId",
+                message: "user does not exist",
+            })
+            return response
+        }
+        if ((e as any).code === "P2002") {
+            response.errors.push({
+                field: "email",
+                message: "email already in use",
+            })
+            return response
+        }
         throw e
     }
+}
+
+export const updateUser = async (
+    user: UserUpdateInput
+): Promise<ModelResponseType<User>> => {
+    return _updateUser(user)
 }
 
 export const updateUserWithVerification = async (
@@ -88,34 +184,53 @@ export const updateUserWithVerification = async (
         newPassword?: User["password"]
         email?: User["email"]
     }
-): Promise<User | null> => {
-    try {
-        if (!(await verifyUserWithIdPassword(user.id, oldpassword))) {
-            return null
-        }
-        let password = undefined
-        if (user.newPassword !== undefined) {
-            password = await hash(user.newPassword)
-            user.newPassword = undefined
-        }
-        return await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                ...user,
-                password,
-            },
-        })
-    } catch (e: any) {
-        throw e
+): Promise<ModelResponseType<User>> => {
+    let response: ModelResponseType<User> = { data: null, errors: [] }
+    const valid = await verifyUserWithIdPassword(user.id, oldpassword)
+    response.errors = valid.errors
+    if (!valid.data) {
+        return response
     }
+
+    let password = undefined
+    if (user.newPassword !== undefined) {
+        password = await hash(user.newPassword)
+        user.newPassword = undefined
+    }
+    const dbUser = await _updateUser({
+        ...user,
+        password,
+    })
+
+    response.errors = [...response.errors, ...dbUser.errors]
+    response.data = dbUser.data
+    return response
 }
 
-export const deleteUser = async (id: User["id"]): Promise<void> => {
+export const deleteUser = async (
+    id: User["id"]
+): Promise<ModelResponseType<void>> => {
+    let response: ModelResponseType<void> = { data: undefined, errors: [] }
     try {
-        await prisma.user.delete({
+        const dbUser = await prisma.user.delete({
             where: { id },
         })
+        if (!dbUser) {
+            response.errors.push({
+                field: "userId",
+                message: "unknown error",
+            })
+            return response
+        }
+        return response
     } catch (e: any) {
+        if ((e as any).code === "P2025") {
+            response.errors.push({
+                field: "userId",
+                message: "user does not exist",
+            })
+            return response
+        }
         throw e
     }
 }
