@@ -56,7 +56,7 @@ it("register", async () => {
         firstname: "Jane",
         lastname: "Doe",
         email: "janedoefromexpress@gmail.com",
-        password: "thisismypassword",
+        password: "th1sismyP@ssword",
     })
     expect(res.statusCode).toEqual(200)
     expect(res.headers["set-cookie"].length).toEqual(1)
@@ -66,7 +66,7 @@ describe("Authorization", () => {
     it("create movie (signed in)", async () => {
         let res = await request(server).post("/user/login").send({
             email: "janedoefromexpress@gmail.com",
-            password: "thisismypassword",
+            password: "th1sismyP@ssword",
         })
 
         res = await request(server)
@@ -87,7 +87,7 @@ describe("Authorization", () => {
     it("logout", async () => {
         let res = await request(server).post("/user/login").send({
             email: "janedoefromexpress@gmail.com",
-            password: "thisismypassword",
+            password: "th1sismyP@ssword",
         })
 
         expect(res.statusCode).toEqual(200)
@@ -117,7 +117,7 @@ describe("Authorization", () => {
             firstname: "John",
             lastname: "Doe",
             email: "johndoefromexpress@gmail.com",
-            password: "thisismypassword",
+            password: "th1sismyP@ssword",
         })
         const cookie = res.headers["set-cookie"]
         res = await request(server)
@@ -146,7 +146,7 @@ describe("Authorization", () => {
     it("vote for movie", async () => {
         let res = await request(server).post("/user/login").send({
             email: "janedoefromexpress@gmail.com",
-            password: "thisismypassword",
+            password: "th1sismyP@ssword",
         })
 
         res = await request(server)

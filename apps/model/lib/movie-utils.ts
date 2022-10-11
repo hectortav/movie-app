@@ -11,7 +11,7 @@ interface GetHydratedMoviesProps {
 
 export const generateOrderBy = (
     param: "likes" | "hates" | "createdAt" | undefined,
-    order: "ASC" | "DESC" | undefined
+    order: "asc" | "desc" | undefined
 ): Prisma.Sql | undefined => {
     // work around because order by is sanitized and cannot use interpolated variables
     if (param === undefined || order === undefined) {
@@ -20,9 +20,9 @@ export const generateOrderBy = (
     switch (param) {
         case "likes":
             switch (order) {
-                case "DESC":
+                case "desc":
                     return Prisma.sql`ORDER BY likes DESC`
-                case "ASC":
+                case "asc":
                     return Prisma.sql`ORDER BY likes ASC`
                 default:
                     /* istanbul ignore next */
@@ -30,9 +30,9 @@ export const generateOrderBy = (
             }
         case "hates":
             switch (order) {
-                case "DESC":
+                case "desc":
                     return Prisma.sql`ORDER BY hates DESC`
-                case "ASC":
+                case "asc":
                     return Prisma.sql`ORDER BY hates ASC`
                 default:
                     /* istanbul ignore next */
@@ -40,9 +40,9 @@ export const generateOrderBy = (
             }
         case "createdAt":
             switch (order) {
-                case "DESC":
+                case "desc":
                     return Prisma.sql`ORDER BY "createdAt" DESC`
-                case "ASC":
+                case "asc":
                     return Prisma.sql`ORDER BY "createdAt" ASC`
                 default:
                     /* istanbul ignore next */

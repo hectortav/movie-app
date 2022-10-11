@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+export type AnyZodObject = z.AnyZodObject
 export const str = z.string()
 export const id = z.string()
 export const email = z.string().email()
@@ -23,6 +24,13 @@ export const userInputValidator = z
     })
     .strict()
 
+export const userLoginValidator = z
+    .object({
+        email,
+        password: z.string(),
+    })
+    .strict()
+
 export const userUpdateInputValidator = userInputValidator
     .partial()
     .omit({ email: true, password: true })
@@ -33,13 +41,18 @@ export const movieInputValidator = z
     .object({
         title: z.string().min(5).max(50),
         description: z.string().min(5).max(250),
-        creatorId: id.optional(),
     })
     .strict()
 
 export const movieUpdateInputValidator = movieInputValidator
     .partial()
     .extend({ id })
+    .strict()
+
+export const userVoteInputValidator = z
+    .object({
+        vote: z.enum(["LIKES", "HATES"]),
+    })
     .strict()
 
 /* model */
@@ -55,7 +68,25 @@ export const userUpdateInputModelValidator = userUpdateInputValidator
 export const movieInputModelValidator = movieInputValidator
     .extend({
         id: id.optional(),
+        creatorId: id,
     })
     .strict()
 
 export const movieUpdateInputModelValidator = movieUpdateInputValidator
+
+export const movieSortPropsModelValidator = z
+    .object({
+        param: z.enum(["likes", "hates", "createdAt"]),
+        order: z.enum(["asc", "desc"]),
+    })
+    .strict()
+export const movieSortPropsValidator = movieSortPropsModelValidator
+    .partial({ param: true, order: true })
+    .passthrough()
+
+export const userVoteInputModelValidator = userVoteInputValidator
+    .extend({
+        userId: id,
+        movieId: id,
+    })
+    .strict()

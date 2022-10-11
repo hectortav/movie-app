@@ -141,6 +141,7 @@ export const getAllMoviesSortedBy = async ({
         errors: [],
     }
     try {
+        v.movieSortPropsModelValidator.parse({ param, order })
         const movies: HydratedMovie[] = await getHydratedMovies({
             sort: { param, order },
         })
@@ -155,6 +156,9 @@ export const getAllMoviesSortedBy = async ({
 
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         /* istanbul ignore next */
         throw e
     }

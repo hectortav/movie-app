@@ -8,7 +8,7 @@ import {
 export { PrismaClientKnownRequestError as ClientKnownRequestError } from "@prisma/client"
 export type { User, Movie, UserVote }
 
-export { ModelResponseType } from "validation-n-types"
+export { ModelResponseType, MovieSortProps } from "validation-n-types"
 
 /* User types start */
 type Optional<Type, Key extends keyof Type> = Omit<Type, Key> &
@@ -33,11 +33,6 @@ export type HydratedMovie = MovieIdInput & {
     creatorName: string
 }
 export type MovieUpdateInput = Partial<MovieIdInput> & { id: Movie["id"] }
-
-export interface MovieSortProps {
-    param: "likes" | "hates" | "createdAt"
-    order: "ASC" | "DESC"
-}
 
 /* Movie types end */
 

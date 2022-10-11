@@ -5,6 +5,6 @@ module.exports = {
         "^.+\\.(js|jsx)$": "babel-jest",
     },
     modulePathIgnorePatterns: ["<rootDir>/dist/"],
-    collectCoverage: true,
+    collectCoverage: false,
     collectCoverageFrom: ["src/routes/**/{!(index),}.(js|ts|jsx|tsx)"],
 }

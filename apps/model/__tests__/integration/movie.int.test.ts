@@ -102,7 +102,7 @@ test("get all movies", async () => {
 test("get all movies sort by Likes descending", async () => {
     const dbMovies = await getAllMoviesSortedBy({
         param: "likes",
-        order: "DESC",
+        order: "desc",
     })
 
     expect(dbMovies.errors.length).toEqual(0)
@@ -118,7 +118,7 @@ test("get all movies sort by Likes descending", async () => {
 test("get all movies sort by Likes ascending", async () => {
     const dbMovies = await getAllMoviesSortedBy({
         param: "likes",
-        order: "ASC",
+        order: "asc",
     })
 
     expect(dbMovies.errors.length).toEqual(0)
@@ -134,7 +134,7 @@ test("get all movies sort by Likes ascending", async () => {
 test("get all movies sort by Hates descending", async () => {
     const dbMovies = await getAllMoviesSortedBy({
         param: "hates",
-        order: "DESC",
+        order: "desc",
     })
     expect(dbMovies.errors.length).toEqual(0)
     expect(dbMovies.data).not.toEqual(null)
@@ -149,7 +149,7 @@ test("get all movies sort by Hates descending", async () => {
 test("get all movies sort by Hates ascending", async () => {
     const dbMovies = await getAllMoviesSortedBy({
         param: "hates",
-        order: "ASC",
+        order: "asc",
     })
     expect(dbMovies.errors.length).toEqual(0)
     expect(dbMovies.data).not.toEqual(null)
@@ -164,7 +164,7 @@ test("get all movies sort by Hates ascending", async () => {
 test("get all movies sort by createdAt descending", async () => {
     const dbMovies = await getAllMoviesSortedBy({
         param: "createdAt",
-        order: "DESC",
+        order: "desc",
     })
 
     expect(dbMovies.errors.length).toEqual(0)
@@ -180,7 +180,7 @@ test("get all movies sort by createdAt descending", async () => {
 test("get all movies sort by createdAt ascending", async () => {
     const dbMovies = await getAllMoviesSortedBy({
         param: "createdAt",
-        order: "ASC",
+        order: "asc",
     })
     expect(dbMovies.errors.length).toEqual(0)
     expect(dbMovies.data).not.toEqual(null)
