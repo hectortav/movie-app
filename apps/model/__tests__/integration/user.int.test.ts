@@ -17,7 +17,7 @@ const user = {
     firstname: "Jane",
     lastname: "Doe",
     email: `janedoe${TEST_ID}@gmail.com`,
-    password: "thisismypassword",
+    password: "th1sismyP@ssword",
 }
 
 test("delete user that doesn't exist", async () => {
@@ -47,21 +47,21 @@ test("verify user wrong Id", async () => {
 
 test("verify user wrong Email", async () => {
     const dbUser = await verifyUserWithEmailPassword(
-        "awrongemail",
+        "awrongemail@gmail.com",
         user.password
     )
     expect(containsField(dbUser.errors, "email")).toEqual(true)
 })
 
 test("verify user with Id but wrong password", async () => {
-    const dbUser = await verifyUserWithIdPassword(user.id, "wrond password")
+    const dbUser = await verifyUserWithIdPassword(user.id, "wrondpassword")
     expect(containsField(dbUser.errors, "password")).toEqual(true)
 })
 
 test("verify user with Email but wrong password", async () => {
     const dbUser = await verifyUserWithEmailPassword(
         user.email,
-        "wrond password"
+        "wrondpassword"
     )
     expect(containsField(dbUser.errors, "password")).toEqual(true)
 })
@@ -99,13 +99,13 @@ test("update user password", async () => {
     const dbUser = await updateUserWithVerification(user.password, {
         id: user.id,
         firstname: "Maria",
-        newPassword: user.password.toUpperCase(),
+        newPassword: user.password.toUpperCase() + "m",
     })
     expect(dbUser.data?.firstname).toEqual("Maria")
 })
 
 test("update user Email with wrong password", async () => {
-    const dbUser = await updateUserWithVerification("wrong password", {
+    const dbUser = await updateUserWithVerification("wrongpassword", {
         id: user.id,
         email: "email@gmail.com",
     })
@@ -114,7 +114,7 @@ test("update user Email with wrong password", async () => {
 
 test("update user Email with Email that exists", async () => {
     const dbUser = await updateUserWithVerification(
-        user.password.toUpperCase(),
+        user.password.toUpperCase() + "m",
         {
             id: user.id,
             email: "randomemail@gmail.com",

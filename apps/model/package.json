@@ -33,6 +33,7 @@
         "prisma": "^4.4.0",
         "ts-jest": "^29.0.3",
         "tsconfig": "*",
+        "validation-n-types": "*",
         "typescript": "^4.5.3"
     }
 }

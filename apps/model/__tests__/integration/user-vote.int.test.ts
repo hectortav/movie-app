@@ -15,7 +15,7 @@ const user = {
     firstname: "Jane",
     lastname: "Doe",
     email: `janedoe${TEST_ID}@gmail.com`,
-    password: "thisismypassword",
+    password: "th1sismyP@ssword",
 }
 
 const user1 = {
@@ -23,7 +23,7 @@ const user1 = {
     firstname: "John",
     lastname: "Doe",
     email: `johndoe${TEST_ID}@gmail.com`,
-    password: "thisismypassword",
+    password: "th1sismyP@ssword",
 }
 
 const user2 = {
@@ -31,7 +31,7 @@ const user2 = {
     firstname: "John",
     lastname: "Doe 2",
     email: `johndoesecond${TEST_ID}@gmail.com`,
-    password: "thisismypassword",
+    password: "th1sismyP@ssword",
 }
 
 const movie = {

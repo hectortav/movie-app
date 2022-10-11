@@ -1,3 +1,4 @@
+import * as v from "validation-n-types"
 import { UserVote, UserVoteInput, ModelResponseType } from "../types"
 import { prisma } from "../lib"
 
@@ -6,6 +7,7 @@ export const createUserVote = async (
 ): Promise<ModelResponseType<UserVote>> => {
     let response: ModelResponseType<UserVote> = { data: null, errors: [] }
     try {
+        v.userVoteInputModelValidator.parse(userVote)
         const current = await prisma.userVote.findUnique({
             where: {
                 voteIdentifier: {
@@ -67,6 +69,10 @@ export const createUserVote = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+
         if ((e as any).code === "P2003") {
             response.errors.push({
                 field: "userId",

@@ -41,7 +41,7 @@
         "ts-jest": "^29.0.3",
         "ts-node": "^10.9.1",
         "tsconfig": "*",
-        "types": "*",
+        "validation-n-types": "*",
         "typescript": "^4.5.3"
     }
 }

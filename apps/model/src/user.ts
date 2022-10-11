@@ -1,4 +1,5 @@
 import { v4 } from "uuid"
+import * as v from "validation-n-types"
 import { User, UserInput, UserUpdateInput, ModelResponseType } from "../types"
 import { prisma, verify, hash } from "../lib"
 
@@ -7,6 +8,7 @@ export const createUser = async (
 ): Promise<ModelResponseType<User>> => {
     let response: ModelResponseType<User> = { data: null, errors: [] }
     try {
+        v.userInputModelValidator.parse(user)
         if (user.id === undefined) {
             user.id = v4()
         }
@@ -25,6 +27,9 @@ export const createUser = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         if ((e as any).code === "P2002") {
             response.errors.push({
                 field: "email",
@@ -40,6 +45,7 @@ export const getUserById = async (
     id: User["id"]
 ): Promise<ModelResponseType<User>> => {
     let response: ModelResponseType<User> = { data: null, errors: [] }
+    v.id.parse(id)
     try {
         const dbUser = await prisma.user.findUnique({
             where: { id },
@@ -53,6 +59,10 @@ export const getUserById = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+
         /* istanbul ignore next */
         throw e
     }
@@ -62,6 +72,7 @@ export const getUserByEmail = async (
     email: User["email"]
 ): Promise<ModelResponseType<User>> => {
     let response: ModelResponseType<User> = { data: null, errors: [] }
+    v.email.parse(email)
     try {
         const dbUser = await prisma.user.findUnique({
             where: { email },
@@ -75,6 +86,9 @@ export const getUserByEmail = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         /* istanbul ignore next */
         throw e
     }
@@ -85,6 +99,14 @@ export const verifyUserWithIdPassword = async (
     password: User["password"]
 ): Promise<ModelResponseType<boolean>> => {
     let response: ModelResponseType<boolean> = { data: false, errors: [] }
+    try {
+        v.id.parse(id)
+        v.str.parse(password)
+    } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+    }
     const user = await getUserById(id)
     response.errors = user.errors
     if (user.data === null) {
@@ -109,6 +131,14 @@ export const verifyUserWithEmailPassword = async (
     password: User["password"]
 ): Promise<ModelResponseType<User["id"]>> => {
     let response: ModelResponseType<User["id"]> = { data: null, errors: [] }
+    try {
+        v.email.parse(email)
+        v.str.parse(password)
+    } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+    }
     const user = await getUserByEmail(email)
     response.errors = user.errors
     if (user.data === null) {
@@ -175,7 +205,17 @@ const _updateUser = async (
 export const updateUser = async (
     user: UserUpdateInput
 ): Promise<ModelResponseType<User>> => {
-    return _updateUser(user)
+    let response: ModelResponseType<User> = { data: null, errors: [] }
+    try {
+        v.userUpdateInputModelValidator.parse(user)
+    } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+        throw e
+    }
+    response = await _updateUser(user)
+    return response
 }
 
 export const updateUserWithVerification = async (
@@ -186,6 +226,22 @@ export const updateUserWithVerification = async (
     }
 ): Promise<ModelResponseType<User>> => {
     let response: ModelResponseType<User> = { data: null, errors: [] }
+    try {
+        v.userUpdateInputModelValidator
+            .extend({
+                newPassword: v.password.optional(),
+                email: v.email.optional(),
+                password: v.str.optional(),
+            })
+            .strict()
+            .parse(user)
+    } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+        throw e
+    }
+
     const valid = await verifyUserWithIdPassword(user.id, oldpassword)
     response.errors = valid.errors
     if (!valid.data) {
@@ -212,6 +268,7 @@ export const deleteUser = async (
 ): Promise<ModelResponseType<void>> => {
     let response: ModelResponseType<void> = { data: undefined, errors: [] }
     try {
+        v.id.parse(id)
         const dbUser = await prisma.user.delete({
             where: { id },
         })
@@ -223,6 +280,9 @@ export const deleteUser = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         if ((e as any).code === "P2025") {
             response.errors.push({
                 field: "userId",
