@@ -1,4 +1,4 @@
-import { ModelError } from "types"
+import { ModelError } from "validation-n-types"
 
 export const formatErrors = (errors: ModelError[]) => {
     const found = [-1, -1]

@@ -8,7 +8,7 @@ import {
 export { PrismaClientKnownRequestError as ClientKnownRequestError } from "@prisma/client"
 export type { User, Movie, UserVote }
 
-export { ModelResponseType } from "types"
+export { ModelResponseType } from "validation-n-types"
 
 /* User types start */
 type Optional<Type, Key extends keyof Type> = Omit<Type, Key> &

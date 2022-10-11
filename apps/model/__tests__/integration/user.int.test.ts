@@ -17,7 +17,7 @@ const user = {
     firstname: "Jane",
     lastname: "Doe",
     email: `janedoe${TEST_ID}@gmail.com`,
-    password: "thisismypassword",
+    password: "th1sismyP@ssword",
 }
 
 test("delete user that doesn't exist", async () => {
@@ -99,7 +99,7 @@ test("update user password", async () => {
     const dbUser = await updateUserWithVerification(user.password, {
         id: user.id,
         firstname: "Maria",
-        newPassword: user.password.toUpperCase(),
+        newPassword: user.password.toUpperCase() + "m",
     })
     expect(dbUser.data?.firstname).toEqual("Maria")
 })
@@ -114,7 +114,7 @@ test("update user Email with wrong password", async () => {
 
 test("update user Email with Email that exists", async () => {
     const dbUser = await updateUserWithVerification(
-        user.password.toUpperCase(),
+        user.password.toUpperCase() + "m",
         {
             id: user.id,
             email: "randomemail@gmail.com",

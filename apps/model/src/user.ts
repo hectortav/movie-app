@@ -1,4 +1,5 @@
 import { v4 } from "uuid"
+import * as v from "validation-n-types"
 import { User, UserInput, UserUpdateInput, ModelResponseType } from "../types"
 import { prisma, verify, hash } from "../lib"
 
@@ -7,6 +8,7 @@ export const createUser = async (
 ): Promise<ModelResponseType<User>> => {
     let response: ModelResponseType<User> = { data: null, errors: [] }
     try {
+        v.userInputModelValidator.parse(user)
         if (user.id === undefined) {
             user.id = v4()
         }
@@ -25,6 +27,10 @@ export const createUser = async (
         }
         return response
     } catch (e: any) {
+        response.errors = [
+            ...response.errors,
+            ...v.catchZodError(response.errors),
+        ]
         if ((e as any).code === "P2002") {
             response.errors.push({
                 field: "email",
@@ -175,7 +181,21 @@ const _updateUser = async (
 export const updateUser = async (
     user: UserUpdateInput
 ): Promise<ModelResponseType<User>> => {
-    return _updateUser(user)
+    let response: ModelResponseType<User> = { data: null, errors: [] }
+    try {
+        v.userUpdateInputModelValidator.parse(user)
+    } catch (e) {
+        response.errors = [
+            ...response.errors,
+            ...v.catchZodError(response.errors),
+        ]
+        if (response.errors.length > 0) {
+            return response
+        }
+        throw e
+    }
+    response = await _updateUser(user)
+    return response
 }
 
 export const updateUserWithVerification = async (
@@ -186,6 +206,25 @@ export const updateUserWithVerification = async (
     }
 ): Promise<ModelResponseType<User>> => {
     let response: ModelResponseType<User> = { data: null, errors: [] }
+    try {
+        v.userUpdateInputModelValidator
+            .extend({
+                newPassword: v.password.optional(),
+                email: v.email.optional(),
+            })
+            .strict()
+            .parse(user)
+    } catch (e) {
+        response.errors = [
+            ...response.errors,
+            ...v.catchZodError(response.errors),
+        ]
+        if (response.errors.length > 0) {
+            return response
+        }
+        throw e
+    }
+
     const valid = await verifyUserWithIdPassword(user.id, oldpassword)
     response.errors = valid.errors
     if (!valid.data) {
@@ -212,6 +251,7 @@ export const deleteUser = async (
 ): Promise<ModelResponseType<void>> => {
     let response: ModelResponseType<void> = { data: undefined, errors: [] }
     try {
+        v.id.parse(id)
         const dbUser = await prisma.user.delete({
             where: { id },
         })
@@ -223,6 +263,13 @@ export const deleteUser = async (
         }
         return response
     } catch (e: any) {
+        response.errors = [
+            ...response.errors,
+            ...v.catchZodError(response.errors),
+        ]
+        if (response.errors.length > 0) {
+            return response
+        }
         if ((e as any).code === "P2025") {
             response.errors.push({
                 field: "userId",
