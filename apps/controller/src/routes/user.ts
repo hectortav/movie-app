@@ -15,17 +15,17 @@ router.post("/register", async (req: RequestWSession, res: Response) => {
         password,
     })
     if (user.errors.length > 0) {
-        res.status(403).send({ errors: formatErrors(user.errors) })
+        res.status(403).json({ errors: formatErrors(user.errors) })
         return
     }
     if (!user.data) {
-        res.status(500).send({
+        res.status(500).json({
             errors: { field: "userId", message: "unknown error" },
         })
         return
     }
     req.session.userId = user.data.id
-    res.status(200).send()
+    res.status(200).json()
     return
 })
 
@@ -37,13 +37,13 @@ router.post("/login", async (req: RequestWSession, res: Response) => {
         return
     }
     if (!userId.data) {
-        res.status(500).send({
+        res.status(500).json({
             errors: { field: "userId", message: "unknown error" },
         })
         return
     }
     req.session.userId = userId.data
-    res.status(200).send()
+    res.status(200).json()
     return
 })
 
@@ -59,7 +59,7 @@ router.post("/logout", async (req: RequestWSession, res: Response) => {
     )
     if (success) {
         res.clearCookie("sid")
-        res.status(200).send()
+        res.status(200).json()
         return
     }
     res.status(500).send({ field: "userId", message: "unknown error" })

@@ -17,9 +17,15 @@ export const createMovie = async (
         if (movie.id === undefined) {
             movie.id = v4()
         }
+        const { id, title, description, creatorId } = movie
         const dbMovie = await prisma.movie.create({
             data: {
-                ...movie,
+                id,
+                title,
+                description,
+                creator: {
+                    connect: { id: creatorId },
+                },
             },
         })
         response.data = dbMovie

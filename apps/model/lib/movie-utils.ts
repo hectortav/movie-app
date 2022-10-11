@@ -62,8 +62,8 @@ export const getHydratedMovies = async ({
     const orderBy = generateOrderBy(sort?.param, sort?.order)
     return prisma.$queryRaw<HydratedMovie[]>`
         SELECT m.* , m."createdAt" AS "createdAt",
-            SUM(CASE WHEN v."vote" = 'LIKES' THEN 1 ELSE 0 END) AS likes,
-            SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END) AS hates
+            SUM(CASE WHEN v."vote" = 'LIKES' THEN 1 ELSE 0 END)::int AS likes,
+            SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END)::int AS hates
         FROM "Movie" m
         LEFT JOIN "UserVote" v 
         ON v."movieId" = m.id
