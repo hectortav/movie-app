@@ -5,7 +5,7 @@ import {
     deleteMovie,
     createUserVote,
 } from "../../src"
-import { shouldThrowWithCode } from "../utils"
+import { containsField } from "../utils"
 import { prisma } from "../../lib"
 
 const TEST_ID = "user-vote"
@@ -15,7 +15,7 @@ const user = {
     firstname: "Jane",
     lastname: "Doe",
     email: `janedoe${TEST_ID}@gmail.com`,
-    password: "thisismypassword",
+    password: "th1sismyP@ssword",
 }
 
 const user1 = {
@@ -23,7 +23,7 @@ const user1 = {
     firstname: "John",
     lastname: "Doe",
     email: `johndoe${TEST_ID}@gmail.com`,
-    password: "thisismypassword",
+    password: "th1sismyP@ssword",
 }
 
 const user2 = {
@@ -31,7 +31,7 @@ const user2 = {
     firstname: "John",
     lastname: "Doe 2",
     email: `johndoesecond${TEST_ID}@gmail.com`,
-    password: "thisismypassword",
+    password: "th1sismyP@ssword",
 }
 
 const movie = {
@@ -68,7 +68,7 @@ test("create user vote (like)", async () => {
         userId: user1.id,
         vote: "LIKES",
     })
-    expect(dbUserVote).not.toEqual(null)
+    expect(dbUserVote.errors.length).toEqual(0)
 })
 
 test("create user vote (hate)", async () => {
@@ -77,7 +77,7 @@ test("create user vote (hate)", async () => {
         userId: user1.id,
         vote: "HATES",
     })
-    expect(dbUserVote).not.toEqual(null)
+    expect(dbUserVote.errors.length).toEqual(0)
 })
 
 test("create user vote for movie I own", async () => {
@@ -86,7 +86,7 @@ test("create user vote for movie I own", async () => {
         userId: user.id,
         vote: "LIKES",
     })
-    expect(dbUserVote).toEqual(null)
+    expect(containsField(dbUserVote.errors, "userId")).toEqual(true)
 })
 
 test("create user vote for movie that does not exist", async () => {
@@ -95,15 +95,16 @@ test("create user vote for movie that does not exist", async () => {
         userId: user.id,
         vote: "LIKES",
     })
-    expect(dbUserVote).toEqual(null)
+    expect(containsField(dbUserVote.errors, "movieId")).toEqual(true)
 })
 
 test("create user vote with user that does not exist", async () => {
-    await shouldThrowWithCode(createUserVote, "P2003", {
+    const dbUserVote = await createUserVote({
         movieId: movie.id,
         userId: "random user id",
         vote: "LIKES",
     })
+    expect(containsField(dbUserVote.errors, "userId")).toEqual(true)
 })
 
 test("update user vote (like->hate)", async () => {
@@ -112,17 +113,16 @@ test("update user vote (like->hate)", async () => {
         userId: user1.id,
         vote: "HATES",
     })
-    expect(dbUserVote?.vote).toEqual("HATES")
+    expect(dbUserVote.data?.vote).toEqual("HATES")
 })
 
 test("update user vote (hate->hate)", async () => {
-    await expect(
-        createUserVote({
-            movieId: movie.id,
-            userId: user1.id,
-            vote: "HATES",
-        })
-    ).resolves.not.toThrowError()
+    const dbUserVote = await createUserVote({
+        movieId: movie.id,
+        userId: user1.id,
+        vote: "HATES",
+    })
+    expect(dbUserVote.errors.length).toEqual(0)
 })
 
 test("update user vote (hate->like)", async () => {
@@ -131,21 +131,21 @@ test("update user vote (hate->like)", async () => {
         userId: user1.id,
         vote: "LIKES",
     })
-    expect(dbUserVote?.vote).toEqual("LIKES")
+    expect(dbUserVote.data?.vote).toEqual("LIKES")
 })
 
 test("update user vote (like->like)", async () => {
-    await expect(
-        createUserVote({
-            movieId: movie.id,
-            userId: user1.id,
-            vote: "LIKES",
-        })
-    ).resolves.not.toThrowError()
+    const dbUserVote = await createUserVote({
+        movieId: movie.id,
+        userId: user1.id,
+        vote: "LIKES",
+    })
+    expect(dbUserVote.errors.length).toEqual(0)
 })
 
 test("delete movie", async () => {
-    await expect(deleteMovie(user.id, movie.id)).resolves.not.toThrowError()
+    const dbMovie = await deleteMovie(user.id, movie.id)
+    expect(dbMovie.errors.length).toEqual(0)
     const uv = await prisma.userVote.findMany({
         where: { movieId: movie.id },
     })
@@ -158,11 +158,19 @@ test("delete user with vote", async () => {
         userId: user2.id,
         vote: "HATES",
     })
-    await expect(deleteUser(user2.id)).resolves.not.toThrowError()
+    const dbUser = await deleteUser(user2.id)
+    expect(dbUser.errors.length).toEqual(0)
     const uv = await prisma.userVote.findMany({
         where: { userId: user2.id },
     })
     expect(uv.length).toEqual(0)
 })
 
-test("delete user with movie with vote", async () => {})
+test("delete user with movie with vote", async () => {
+    const dbUser = await deleteUser(user.id)
+    expect(dbUser.errors.length).toEqual(0)
+    const uv = await prisma.userVote.findMany({
+        where: { userId: user.id },
+    })
+    expect(uv.length).toEqual(0)
+})
