@@ -1,4 +1,5 @@
 import { v4 } from "uuid"
+import * as v from "validation-n-types"
 import {
     Movie,
     MovieInput,
@@ -14,6 +15,7 @@ export const createMovie = async (
 ): Promise<ModelResponseType<Movie>> => {
     let response: ModelResponseType<Movie> = { data: null, errors: [] }
     try {
+        v.movieInputModelValidator.parse(movie)
         if (movie.id === undefined) {
             movie.id = v4()
         }
@@ -37,6 +39,9 @@ export const createMovie = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         if ((e as any).code === "P2002") {
             response.errors.push({
                 field: "title",
@@ -53,6 +58,7 @@ export const getMovieById = async (
 ): Promise<ModelResponseType<HydratedMovie>> => {
     let response: ModelResponseType<HydratedMovie> = { data: null, errors: [] }
     try {
+        v.id.parse(id)
         const movies: HydratedMovie[] = await getHydratedMovies({
             movieId: id,
             limit: 1,
@@ -67,6 +73,10 @@ export const getMovieById = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+
         /* istanbul ignore next */
         throw e
     }
@@ -103,6 +113,7 @@ export const getMoviesByCreator = async (
         errors: [],
     }
     try {
+        v.id.parse(creatorId)
         const movies: HydratedMovie[] = await getHydratedMovies({ creatorId })
         response.data = movies
         if (!movies) {
@@ -113,6 +124,9 @@ export const getMoviesByCreator = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         /* istanbul ignore next */
         throw e
     }
@@ -155,6 +169,7 @@ export const updateMovie = async (
     }
 
     try {
+        v.movieUpdateInputModelValidator.parse(movie)
         const dbMovie = await prisma.movie.update({
             where: { id: movie.id },
             data: {
@@ -170,6 +185,9 @@ export const updateMovie = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         if ((e as any).code === "P2025") {
             response.errors.push({
                 field: "movieId",
@@ -197,6 +215,8 @@ export const deleteMovie = async (
         errors: [],
     }
     try {
+        v.id.parse(creatorId)
+        v.id.parse(id)
         const dbMovie = await prisma.$queryRaw`
             DELETE FROM "Movie" m
             WHERE m.id = ${id}
@@ -210,6 +230,9 @@ export const deleteMovie = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         if ((e as any).code === "P2025") {
             response.errors.push({
                 field: "userId",

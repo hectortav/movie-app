@@ -47,21 +47,21 @@ test("verify user wrong Id", async () => {
 
 test("verify user wrong Email", async () => {
     const dbUser = await verifyUserWithEmailPassword(
-        "awrongemail",
+        "awrongemail@gmail.com",
         user.password
     )
     expect(containsField(dbUser.errors, "email")).toEqual(true)
 })
 
 test("verify user with Id but wrong password", async () => {
-    const dbUser = await verifyUserWithIdPassword(user.id, "wrond password")
+    const dbUser = await verifyUserWithIdPassword(user.id, "wrondpassword")
     expect(containsField(dbUser.errors, "password")).toEqual(true)
 })
 
 test("verify user with Email but wrong password", async () => {
     const dbUser = await verifyUserWithEmailPassword(
         user.email,
-        "wrond password"
+        "wrondpassword"
     )
     expect(containsField(dbUser.errors, "password")).toEqual(true)
 })
@@ -105,7 +105,7 @@ test("update user password", async () => {
 })
 
 test("update user Email with wrong password", async () => {
-    const dbUser = await updateUserWithVerification("wrong password", {
+    const dbUser = await updateUserWithVerification("wrongpassword", {
         id: user.id,
         email: "email@gmail.com",
     })

@@ -8,5 +8,5 @@ module.exports = {
         "<rootDir>/dist/",
         "<rootDir>/__tests__/utils.ts",
     ],
-    collectCoverage: true,
+    collectCoverage: false,
 }

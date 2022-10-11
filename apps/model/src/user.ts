@@ -27,10 +27,9 @@ export const createUser = async (
         }
         return response
     } catch (e: any) {
-        response.errors = [
-            ...response.errors,
-            ...v.catchZodError(response.errors),
-        ]
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         if ((e as any).code === "P2002") {
             response.errors.push({
                 field: "email",
@@ -46,6 +45,7 @@ export const getUserById = async (
     id: User["id"]
 ): Promise<ModelResponseType<User>> => {
     let response: ModelResponseType<User> = { data: null, errors: [] }
+    v.id.parse(id)
     try {
         const dbUser = await prisma.user.findUnique({
             where: { id },
@@ -59,6 +59,10 @@ export const getUserById = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+
         /* istanbul ignore next */
         throw e
     }
@@ -68,6 +72,7 @@ export const getUserByEmail = async (
     email: User["email"]
 ): Promise<ModelResponseType<User>> => {
     let response: ModelResponseType<User> = { data: null, errors: [] }
+    v.email.parse(email)
     try {
         const dbUser = await prisma.user.findUnique({
             where: { email },
@@ -81,6 +86,9 @@ export const getUserByEmail = async (
         }
         return response
     } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         /* istanbul ignore next */
         throw e
     }
@@ -91,6 +99,14 @@ export const verifyUserWithIdPassword = async (
     password: User["password"]
 ): Promise<ModelResponseType<boolean>> => {
     let response: ModelResponseType<boolean> = { data: false, errors: [] }
+    try {
+        v.id.parse(id)
+        v.str.parse(password)
+    } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+    }
     const user = await getUserById(id)
     response.errors = user.errors
     if (user.data === null) {
@@ -115,6 +131,14 @@ export const verifyUserWithEmailPassword = async (
     password: User["password"]
 ): Promise<ModelResponseType<User["id"]>> => {
     let response: ModelResponseType<User["id"]> = { data: null, errors: [] }
+    try {
+        v.email.parse(email)
+        v.str.parse(password)
+    } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
+    }
     const user = await getUserByEmail(email)
     response.errors = user.errors
     if (user.data === null) {
@@ -184,14 +208,10 @@ export const updateUser = async (
     let response: ModelResponseType<User> = { data: null, errors: [] }
     try {
         v.userUpdateInputModelValidator.parse(user)
-    } catch (e) {
-        response.errors = [
-            ...response.errors,
-            ...v.catchZodError(response.errors),
-        ]
-        if (response.errors.length > 0) {
-            return response
-        }
+    } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         throw e
     }
     response = await _updateUser(user)
@@ -211,17 +231,14 @@ export const updateUserWithVerification = async (
             .extend({
                 newPassword: v.password.optional(),
                 email: v.email.optional(),
+                password: v.str.optional(),
             })
             .strict()
             .parse(user)
-    } catch (e) {
-        response.errors = [
-            ...response.errors,
-            ...v.catchZodError(response.errors),
-        ]
-        if (response.errors.length > 0) {
-            return response
-        }
+    } catch (e: any) {
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         throw e
     }
 
@@ -263,13 +280,9 @@ export const deleteUser = async (
         }
         return response
     } catch (e: any) {
-        response.errors = [
-            ...response.errors,
-            ...v.catchZodError(response.errors),
-        ]
-        if (response.errors.length > 0) {
-            return response
-        }
+        const verrors = v.catchZodError(e)
+        /* prettier-ignore */
+        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
         if ((e as any).code === "P2025") {
             response.errors.push({
                 field: "userId",

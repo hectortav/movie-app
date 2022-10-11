@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { ModelError } from "./index.d"
 
-export const catchZodError = (e: any): ModelError[] => {
+export const catchZodError = (e: z.ZodError): ModelError[] => {
     const errors: ModelError[] = []
     if (e instanceof z.ZodError) {
         e.issues.map(({ path, message }) => {
