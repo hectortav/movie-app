@@ -3,7 +3,9 @@ import { authorized } from "../middleware"
 const router = Router()
 
 // get all movies or sort or user id
-router.get("/", (req: Request, res: Response) => res.send({}))
+router.get("/", (req: Request, res: Response) => {
+    res.send({ message: "authorized" })
+})
 // create movie
 router.post("/", authorized, (req: Request, res: Response) => res.send({}))
 // vote movie

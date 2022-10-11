@@ -1,74 +1,68 @@
-import { Router, Request, Response } from "express"
-import { Session } from "express-session"
+import { Router, Response } from "express"
 import { createUser, verifyUserWithEmailPassword } from "model"
 import { authorized } from "../middleware"
-const router = Router()
+import { formatErrors } from "../lib"
+import type { RequestWSession } from "../types"
 
-type RequestWSession = Request & {
-    session: Session & {
-        userId?: string
-    }
-}
+const router = Router()
 
 router.post("/register", async (req: RequestWSession, res: Response) => {
     const { firstname, lastname, email, password } = req.body
-    try {
-        const user = await createUser({
-            firstname,
-            lastname,
-            email,
-            password,
-        })
-        if (!user) {
-            res.status(403).send({ message: "Wrong input" })
-            return
-        }
-        req.session.userId = user.id
-        res.status(200).send()
+    const user = await createUser({
+        firstname,
+        lastname,
+        email,
+        password,
+    })
+    if (user.errors.length > 0) {
+        res.status(403).send({ errors: formatErrors(user.errors) })
         return
-    } catch (e: any) {
-        if (e?.code === "P2002") {
-            res.status(403).send({ message: "Email in use" })
-            return
-        }
     }
+    if (!user.data) {
+        res.status(500).send({
+            errors: { field: "userId", message: "unknown error" },
+        })
+        return
+    }
+    req.session.userId = user.data.id
+    res.status(200).send()
+    return
 })
+
 router.post("/login", async (req: RequestWSession, res: Response) => {
     const { email, password } = req.body
-    try {
-        const userId = await verifyUserWithEmailPassword(email, password)
-        if (userId !== null) {
-            req.session.userId = userId
-            console.log(req.session.userId, userId)
-            res.status(200).send()
-            return
-        }
-        res.status(403).send({})
+    const userId = await verifyUserWithEmailPassword(email, password)
+    if (userId.errors.length > 0) {
+        res.status(403).send({ errors: formatErrors(userId.errors) })
         return
-    } catch (e) {
-        res.status(500).send({ message: "Something went wrong" })
     }
+    if (!userId.data) {
+        res.status(500).send({
+            errors: { field: "userId", message: "unknown error" },
+        })
+        return
+    }
+    req.session.userId = userId.data
+    res.status(200).send()
+    return
 })
-router.post(
-    "/logout",
-    authorized,
-    async (req: RequestWSession, res: Response) => {
-        const success = await new Promise((resolve) =>
-            req.session.destroy((e) => {
-                if (e) {
-                    resolve(false)
-                    return
-                }
-                resolve(true)
-            })
-        )
-        if (success) {
-            res.clearCookie("sid")
-            res.status(200).send()
-            return
-        }
-        res.status(500).send({ message: "Something went wrong" })
+
+router.post("/logout", async (req: RequestWSession, res: Response) => {
+    const success = await new Promise((resolve) =>
+        req.session.destroy((e) => {
+            if (e) {
+                resolve(false)
+                return
+            }
+            resolve(true)
+        })
+    )
+    if (success) {
+        res.clearCookie("sid")
+        res.status(200).send()
+        return
     }
-)
+    res.status(500).send({ field: "userId", message: "unknown error" })
+})
 
 export default router

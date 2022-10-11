@@ -9,15 +9,15 @@ afterAll(async () => {
 test("view movies (not signed in)", async () => {
     const res = await request(server).get("/movie")
 
-    expect(res.statusCode).resolves.toEqual(200)
-    expect(res.body).resolves.toHaveProperty("movies")
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toHaveProperty("movies")
 })
 
 test("view movies by user (not signed in)", async () => {
     const res = await request(server).get("/movie").query({ userId: "test-id" })
 
-    expect(res.statusCode).resolves.toEqual(200)
-    expect(res.body).resolves.toHaveProperty("movies")
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toHaveProperty("movies")
 })
 
 test("view movies sorted by likes ASC (not signed in)", async () => {
@@ -25,8 +25,8 @@ test("view movies sorted by likes ASC (not signed in)", async () => {
         .get("/movie")
         .query({ param: "likes", order: "asc" })
 
-    expect(res.statusCode).resolves.toEqual(200)
-    expect(res.body).resolves.toHaveProperty("movies")
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toHaveProperty("movies")
 })
 
 test("view movies sorted by likes ASC (not signed in)", async () => {
@@ -34,8 +34,8 @@ test("view movies sorted by likes ASC (not signed in)", async () => {
         .get("/movie")
         .query({ param: "likes", order: "asc" })
 
-    expect(res.statusCode).resolves.toEqual(200)
-    expect(res.body).resolves.toHaveProperty("movies")
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toHaveProperty("movies")
 })
 
 test("create movie (not signed in)", async () => {
@@ -44,19 +44,19 @@ test("create movie (not signed in)", async () => {
         description: "And the movie description",
     })
 
-    expect(res.statusCode).resolves.toEqual(401)
-    expect(res.body).resolves.not.toHaveProperty("movie")
+    expect(res.statusCode).toEqual(401)
+    expect(res.body).not.toHaveProperty("movie")
 })
 
 test("register", async () => {
     const res = await request(server).post("/user/register").send({
         firstname: "Jane",
         lastname: "Doe",
-        email: "janedoe@gmail.com",
+        email: "janedoefromexpress@gmail.com",
         password: "thisismypassword",
     })
-
-    expect(res.statusCode).resolves.toEqual(200)
+    expect(res.statusCode).toEqual(200)
+    expect(res.headers["set-cookie"].length).toEqual(1)
 })
 
 test("create movie (signed in)", async () => {
@@ -65,13 +65,14 @@ test("create movie (signed in)", async () => {
         description: "And the movie description",
     })
 
-    expect(res.statusCode).resolves.toEqual(200)
-    expect(res.body).resolves.toHaveProperty("movie")
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).toHaveProperty("movie")
 })
 
 test("logout", async () => {
     const res = await request(server).post("/user/logout").send({})
-    expect(res.statusCode).resolves.toEqual(200)
+    expect(res.statusCode).toEqual(200)
+    expect(res.headers["set-cookie"]).toEqual(null)
 })
 
 test("vote for movie (not signed in)", async () => {
@@ -80,17 +81,18 @@ test("vote for movie (not signed in)", async () => {
         vote: "LIKE",
     })
 
-    expect(res.statusCode).resolves.toEqual(401)
-    expect(res.body).resolves.not.toHaveProperty("movie")
+    expect(res.statusCode).toEqual(401)
+    expect(res.body).not.toHaveProperty("movie")
 })
 
 test("login", async () => {
     const res = await request(server).post("/user/login").send({
-        email: "janedoe@gmail.com",
+        email: "janedoefromexpress@gmail.com",
         password: "thisismypassword",
     })
 
-    expect(res.statusCode).resolves.toEqual(200)
+    expect(res.statusCode).toEqual(200)
+    expect(res.headers["set-cookie"].length).toEqual(1)
 })
 
 test("vote for movie that is mine", async () => {
@@ -99,8 +101,8 @@ test("vote for movie that is mine", async () => {
         vote: "LIKE",
     })
 
-    expect(res.statusCode).resolves.toEqual(405)
-    expect(res.body).resolves.not.toHaveProperty("movie")
+    expect(res.statusCode).toEqual(405)
+    expect(res.body).not.toHaveProperty("movie")
 })
 
 test("vote for movie", async () => {
@@ -109,6 +111,6 @@ test("vote for movie", async () => {
         vote: "LIKE",
     })
 
-    expect(res.statusCode).resolves.toEqual(200)
-    expect(res.body).resolves.not.toHaveProperty("movie")
+    expect(res.statusCode).toEqual(200)
+    expect(res.body).not.toHaveProperty("movie")
 })

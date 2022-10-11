@@ -2,13 +2,10 @@
     "name": "types",
     "version": "0.0.0",
     "private": true,
-    "exports": {
-        ".": "./dist"
-    },
+    "main": "src/index.d.ts",
+    "types": "src/index.d.ts",
     "scripts": {
-        "build": "tsc --project .",
-        "lint": "eslint . --ext .js,.ts --fix",
-        "test": "echo 'no tests yet :('"
+        "lint": "eslint . --ext .js,.ts --fix"
     },
     "dependencies": {},
     "devDependencies": {

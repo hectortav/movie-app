@@ -7,7 +7,11 @@ import connectRedis from "connect-redis"
 import { userRoute, movieRoute } from "./routes"
 import { redis } from "./lib"
 
+require("dotenv").config()
+
 const app = express()
+
+app.set("trust proxy", 1)
 
 app.use(helmet())
 app.disable("x-powered-by")
