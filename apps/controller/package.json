@@ -20,7 +20,8 @@
         "helmet": "^6.0.0",
         "ioredis": "^5.2.3",
         "model": "*",
-        "morgan": "^1.10.0"
+        "morgan": "^1.10.0",
+        "validation-n-types": "*"
     },
     "devDependencies": {
         "@types/connect-redis": "^0.0.18",
@@ -41,7 +42,6 @@
         "ts-jest": "^29.0.3",
         "ts-node": "^10.9.1",
         "tsconfig": "*",
-        "validation-n-types": "*",
         "typescript": "^4.5.3"
     }
 }
