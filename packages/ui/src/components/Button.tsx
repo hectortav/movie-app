@@ -10,7 +10,9 @@ interface ButtonProps
 
 const Button: React.FC<ButtonProps> = (props) => {
     let { children, style, className, active } = props
-    className = "rounded py-2 px-4 font-bold flex items-center justify-center"
+    className =
+        "rounded py-2 px-4 font-bold flex items-center justify-center " +
+        className
 
     if (active) {
         className += " bg-blue-500 text-white hover:bg-blue-700"

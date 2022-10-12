@@ -37,16 +37,25 @@ const Header = () => {
         onError: () => {},
         onSuccess: (data) => {
             setRight(
-                <>
-                    <div className="hidden no-underline hover:underline md:flex">
-                        <a
-                            href={`?userId=${data?.data?.id}`}
-                        >{`${data?.data.firstname} ${data?.data.lastname}`}</a>
+                <div className="flex items-center">
+                    <div className="mr-4">
+                        <div className="hidden no-underline hover:underline md:flex">
+                            <a
+                                href={`?userId=${data?.data?.id}`}
+                            >{`${data?.data.firstname} ${data?.data.lastname}`}</a>
+                        </div>
+
+                        <div className="text-right text-red-500 no-underline hover:underline">
+                            <button onClick={() => mutate()}>logout</button>
+                        </div>
                     </div>
-                    <div className="text-right text-red-500 no-underline hover:underline">
-                        <button onClick={() => mutate()}>logout</button>
-                    </div>
-                </>
+                    <Button
+                        style={{ fontSize: "2rem" }}
+                        onClick={() => router.push("/create")}
+                    >
+                        +
+                    </Button>
+                </div>
             )
         },
     })

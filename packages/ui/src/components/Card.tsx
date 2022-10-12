@@ -37,7 +37,7 @@ const Card: React.FC<CardProps> = (props) => {
         isMine,
         myVote,
     } = props
-    console.log({ myVote, isMine })
+
     return (
         <div className={className} style={style}>
             <div

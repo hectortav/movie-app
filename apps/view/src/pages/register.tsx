@@ -58,7 +58,7 @@ const Register = () => {
         if (data["password"] !== data["confirm-password"]) {
             setError("confirm-password", {
                 type: "custom",
-                message: "custom message",
+                message: "passwords must be the same",
             })
             return
         }
