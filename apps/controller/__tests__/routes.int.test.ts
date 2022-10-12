@@ -10,45 +10,47 @@ let myMovieId = ""
 let otherMovieId = ""
 
 test("view movies (not signed in)", async () => {
-    const res = await request(server).get("/movie")
+    const res = await request(server).get("/movies")
 
     expect(res.statusCode).toEqual(200)
-    expect(res.body).toHaveProperty("movies")
+    expect(res.body).toHaveProperty("data")
 })
 
 test("view movies by user (not signed in)", async () => {
-    const res = await request(server).get("/movie").query({ userId: "test-id" })
+    const res = await request(server)
+        .get("/movies")
+        .query({ userId: "test-id" })
 
     expect(res.statusCode).toEqual(200)
-    expect(res.body).toHaveProperty("movies")
+    expect(res.body).toHaveProperty("data")
 })
 
 test("view movies sorted by likes ASC (not signed in)", async () => {
     const res = await request(server)
-        .get("/movie")
+        .get("/movies")
         .query({ param: "likes", order: "asc" })
 
     expect(res.statusCode).toEqual(200)
-    expect(res.body).toHaveProperty("movies")
+    expect(res.body).toHaveProperty("data")
 })
 
 test("view movies sorted by likes ASC (not signed in)", async () => {
     const res = await request(server)
-        .get("/movie")
+        .get("/movies")
         .query({ param: "likes", order: "asc" })
 
     expect(res.statusCode).toEqual(200)
-    expect(res.body).toHaveProperty("movies")
+    expect(res.body).toHaveProperty("data")
 })
 
 test("create movie (not signed in)", async () => {
-    const res = await request(server).post("/movie").send({
+    const res = await request(server).post("/movies").send({
         title: "A new movie title from supertest",
         description: "And the movie description",
     })
 
     expect(res.statusCode).toEqual(401)
-    expect(res.body).not.toHaveProperty("movie")
+    expect(res.body).not.toHaveProperty("data")
 })
 
 it("register", async () => {
@@ -70,7 +72,7 @@ describe("Authorization", () => {
         })
 
         res = await request(server)
-            .post("/movie")
+            .post("/movies")
             .set("Cookie", [res.headers["set-cookie"]])
             .send({
                 title: "A new movie title",
@@ -78,8 +80,8 @@ describe("Authorization", () => {
             })
 
         expect(res.statusCode).toEqual(200)
-        expect(res.body).toHaveProperty("movie")
-        myMovieId = res.body.movie.data.id
+        expect(res.body).toHaveProperty("data")
+        myMovieId = res.body.data.id
     })
 })
 
@@ -103,12 +105,12 @@ describe("Authorization", () => {
 
 test("vote for movie (not signed in)", async () => {
     const movieId = "test-movieId"
-    const res = await request(server).post(`/movie/${movieId}`).send({
+    const res = await request(server).post(`/movies/${movieId}`).send({
         vote: "LIKES",
     })
 
     expect(res.statusCode).toEqual(401)
-    expect(res.body).not.toHaveProperty("movie")
+    expect(res.body).not.toHaveProperty("data")
 })
 
 describe("Authorization", () => {
@@ -121,24 +123,24 @@ describe("Authorization", () => {
         })
         const cookie = res.headers["set-cookie"]
         res = await request(server)
-            .post("/movie")
+            .post("/movies")
             .set("Cookie", [cookie])
             .send({
                 title: "A new movie title from supertest 2",
                 description: "And the movie description",
             })
 
-        otherMovieId = res.body.movie.data.id
+        otherMovieId = res.body.data.id
 
         res = await request(server)
-            .post(`/movie/${otherMovieId}`)
+            .post(`/movies/${otherMovieId}`)
             .set("Cookie", [cookie])
             .send({
                 vote: "LIKES",
             })
 
         expect(res.statusCode).toEqual(422)
-        expect(res.body).not.toHaveProperty("movie")
+        expect(res.body.data).toEqual(null)
     })
 })
 
@@ -150,13 +152,12 @@ describe("Authorization", () => {
         })
 
         res = await request(server)
-            .post(`/movie/${otherMovieId}`)
+            .post(`/movies/${otherMovieId}`)
             .set("Cookie", [res.headers["set-cookie"]])
             .send({
                 vote: "LIKES",
             })
 
         expect(res.statusCode).toEqual(200)
-        expect(res.body).not.toHaveProperty("movie")
     })
 })

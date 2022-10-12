@@ -15,7 +15,12 @@ app.set("trust proxy", 1)
 
 app.use(helmet())
 app.disable("x-powered-by")
-app.use(cors())
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+    })
+)
 app.use(morgan(process.env.NODE_ENV === "production" ? "tiny" : "dev"))
 app.use(express.json())
 
@@ -41,7 +46,7 @@ app.use(
 )
 
 app.use("/user", userRoute)
-app.use("/movie", movieRoute)
+app.use("/movies", movieRoute)
 
 app.use((_, res: Response) => res.status(404).json({ message: "nothing here" }))
 
