@@ -1,34 +1,9 @@
-import React from "react"
-
-interface ButtonProps
-    extends React.DetailedHTMLProps<
-        React.ButtonHTMLAttributes<HTMLButtonElement>,
-        HTMLButtonElement
-    > {
-    active?: boolean
-}
-
-const Button: React.FC<ButtonProps> = (props) => {
-    let { children, style, className, active } = props
-    className =
-        "rounded py-2 px-4 font-bold flex items-center justify-center " +
-        className
-
-    if (active) {
-        className += " bg-blue-500 text-white hover:bg-blue-700"
-    } else {
-        className += " bg-gray-200 text-blue-500 hover:bg-gray-700"
-    }
+const Button = () => {
     return (
-        <button className={className} style={style} {...props}>
-            {children}
+        <button className="rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700">
+            Boop
         </button>
     )
 }
 
 export default Button
-
-Button.defaultProps = {
-    active: true,
-    style: {},
-}

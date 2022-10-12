@@ -2,33 +2,17 @@
     "$schema": "https://turborepo.org/schema.json",
     "pipeline": {
         "build": {
-            "dependsOn": ["lint", "^build"],
+            "dependsOn": ["^build"],
             "outputs": ["dist/**", ".next/**"]
-        },
-        "controller#build": {
-            "env": ["SESSION_SECRET", "PORT", "DATABASE_URL", "REDIS_HOST"]
         },
         "lint": {
             "outputs": []
-        },
-        "generate": {
-            "env": ["DATABASE_URL"],
-            "cache": false
-        },
-        "migrate": {
-            "env": ["DATABASE_URL"],
-            "cache": false
         },
         "dev": {
             "cache": false
         },
         "test": {
-            "outputs": ["coverage/**"],
-            "outputMode": "full"
-        },
-        "controller#test": {
-            "env": ["SESSION_SECRET", "PORT", "DATABASE_URL", "REDIS_HOST"]
+            "outputs": []
         }
-    },
-    "globalEnv": ["NODE_ENV"]
+    }
 }
