@@ -5,7 +5,7 @@ import axios from "axios"
 import { Button } from "ui"
 
 const fetchMe = async () => {
-    const { data } = await axios.get("http://localhost:8080/user/me", {
+    const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API}/user/me`, {
         withCredentials: true,
     })
     return data
@@ -13,7 +13,7 @@ const fetchMe = async () => {
 
 const fetchLogout = async () => {
     const { data } = await axios.post(
-        "http://localhost:8080/user/logout",
+        `${process.env.NEXT_PUBLIC_API}/user/logout`,
         {},
         {
             withCredentials: true,

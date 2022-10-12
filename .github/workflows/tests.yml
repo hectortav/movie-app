@@ -25,3 +25,4 @@ jobs:
                   POSTGRES_DB: movies
                   DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/movies"
                   SESSION_SECRET: "random_secret"
+                  CORS_ORIGIN: http://localhost:3000

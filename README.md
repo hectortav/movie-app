@@ -35,12 +35,14 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
 cd workable-assignment
+cd apps/model && npx prisma generate
+cd ../../
 
 # run in development
 yarn
 yarn dev
 
-# reun production
+# run production
 yarn
 yarn build
 yarn start
