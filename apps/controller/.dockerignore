@@ -1,0 +1,5 @@
+.next
+dist
+coverage
+__tests__
+node_modules

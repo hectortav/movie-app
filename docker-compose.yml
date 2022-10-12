@@ -1,0 +1,50 @@
+version: "3.9"
+services:
+    redis:
+        image: redis:7-alpine
+        restart: always
+        container_name: redis
+        networks:
+            - net
+        ports: ["6379:6379"]
+        volumes:
+            - /private/redis:/data
+    db:
+        image: postgres:14-alpine
+        restart: always
+        container_name: postgres
+        env_file: ".env"
+        networks:
+            - net
+        ports: ["5432:5432"]
+        volumes:
+            - /private/pgdata:/var/lib/postgresql/data
+    view:
+        build:
+            context: .
+            dockerfile: ./apps/view/Dockerfile
+        restart: always
+        networks:
+            - net
+    controller:
+        build:
+            context: .
+            dockerfile: ./apps/controller/Dockerfile
+        restart: always
+        networks:
+            - net
+    nginx:
+        build:
+            context: ./nginx
+            dockerfile: ./nginx/Dockerfile
+        restart: always
+        ports:
+            - 80:80
+            - 443:443
+        networks:
+            - net
+        links:
+            - view
+            - controller
+networks:
+    net:

@@ -8,16 +8,29 @@
     ],
     "scripts": {
         "build": "turbo run build",
-        "dev": "turbo run dev --parallel",
+        "start:exec": "turbo run start",
+        "start": "yarn docker:up:dev && (yarn migrate && yarn start:exec); ret_code=$?; yarn docker:down:dev; exit $ret_code",
+        "generate": "export $(grep -v '^#' .env | xargs) && turbo run generate",
+        "migrate": "turbo run migrate",
         "lint": "turbo run lint --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
-        "test": "turbo run test --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
+        "test:exec": "turbo run test --ignore=\"eslint-config-custom\" --ignore=\"tsconfig\"",
+        "test": "yarn docker:up:test && (yarn migrate && yarn test:exec); ret_code=$?; yarn docker:down:test; exit $ret_code",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "docker:up:test": "docker-compose -f docker-compose.test.yml up -d",
+        "docker:down:test": "docker-compose -f docker-compose.test.yml down",
+        "docker:up:dev": "docker-compose -f docker-compose.dev.yml up -d",
+        "docker:down:dev": "docker-compose -f docker-compose.dev.yml down",
+        "docker:up": "docker-compose up -d",
+        "docker:down": "docker-compose down",
+        "dev:exec": "yarn generate && turbo run dev --parallel",
+        "dev": "yarn docker:up:dev && (yarn migrate && yarn dev:exec); ret_code=$?; yarn docker:down:dev; exit $ret_code"
     },
     "devDependencies": {
         "eslint-config-custom": "*",
         "husky": "^8.0.0",
         "prettier": "latest",
+        "prettier-plugin-prisma": "^4.4.0",
         "prettier-plugin-tailwindcss": "^0.1.13",
         "pretty-quick": "^3.1.3",
         "turbo": "latest"
