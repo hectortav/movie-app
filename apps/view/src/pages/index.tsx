@@ -5,15 +5,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import axios from "axios"
 
-const fetchMovies = async ({
-    param,
-    order,
-    userId,
-}: {
+interface FetchMoviesProps {
     param: string
     order: string
     userId: string
-}) => {
+}
+
+const fetchMovies = async ({ param, order, userId }: FetchMoviesProps) => {
     const { data } = await axios.get("http://localhost:8080/movies", {
         params: {
             param,
@@ -35,7 +33,7 @@ const Arrow = ({
     rotate = false,
     active = false,
 }: {
-    rotated?: boolean
+    rotate?: boolean
     active?: boolean
 }) => (
     <svg
@@ -55,15 +53,14 @@ const Arrow = ({
     </svg>
 )
 
+type Param = "likes" | "hates" | "createdAt" | undefined
+type Order = "asc" | "desc" | undefined
+
 export default function Web() {
     const router = useRouter()
     const queryClient = useQueryClient()
-    const [param, setParam] = React.useState<
-        "likes" | "hates" | "createdAt" | undefined
-    >(undefined)
-    const [order, setOrder] = React.useState<"asc" | "desc" | undefined>(
-        undefined
-    )
+    const [param, setParam] = React.useState<Param>(undefined)
+    const [order, setOrder] = React.useState<Order>(undefined)
 
     React.useEffect(() => {
         if (param && order) {
@@ -72,11 +69,11 @@ export default function Web() {
     }, [param, order])
 
     const { data, isLoading, refetch } = useQuery(["movies"], () =>
-        fetchMovies({ ...router.query })
+        fetchMovies({ ...router.query } as unknown as FetchMoviesProps)
     )
     React.useEffect(() => {
-        setParam(router.query.param)
-        setOrder(router.query.order)
+        setParam(router.query.param as unknown as Param)
+        setOrder(router.query.order as unknown as Order)
         queryClient.invalidateQueries(["movies"])
         refetch()
     }, [router.query])
@@ -84,7 +81,7 @@ export default function Web() {
     if (isLoading) {
         return <div>Loading...</div>
     }
-    const onClick = (p: string) =>
+    const onClick = (p: Param) =>
         param === p
             ? order === "asc"
                 ? setOrder("desc")
@@ -97,11 +94,13 @@ export default function Web() {
                 <div className="grid grid-cols-3 gap-4">
                     <Button
                         onClick={() => onClick("likes")}
+                        //@ts-ignore
                         active={param === "likes" ? 1 : 0}
                     >
                         <>
                             Likes
                             <Arrow
+                                //@ts-ignore
                                 active={param === "likes" ? 1 : 0}
                                 rotate={order === "desc"}
                             />
@@ -109,11 +108,13 @@ export default function Web() {
                     </Button>
                     <Button
                         onClick={() => onClick("hates")}
+                        //@ts-ignore
                         active={param === "hates" ? 1 : 0}
                     >
                         <>
                             Hates
                             <Arrow
+                                //@ts-ignore
                                 active={param === "hates" ? 1 : 0}
                                 rotate={order === "desc"}
                             />
@@ -121,11 +122,13 @@ export default function Web() {
                     </Button>
                     <Button
                         onClick={() => onClick("createdAt")}
+                        //@ts-ignore
                         active={param === "createdAt" ? 1 : 0}
                     >
                         <>
                             Created at
                             <Arrow
+                                //@ts-ignore
                                 active={param === "createdAt" ? 1 : 0}
                                 rotate={order === "desc"}
                             />
@@ -136,10 +139,10 @@ export default function Web() {
             <Me />
             <section>
                 {data.data.map((movie: Record<string, string | number>) => (
+                    //@ts-ignore
                     <Card
                         key={movie.title}
                         {...movie}
-                        // @ts-ignore
                         style={{ marginBottom: "1rem" }}
                     />
                 ))}

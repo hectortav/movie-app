@@ -76,25 +76,23 @@ const Register = () => {
                     name="firstname"
                     title="First name"
                     register={register}
-                    errors={errors?.["firstname"]?.message}
+                    errors={errors?.["firstname"]?.message as string}
                     placeholder="Jane"
                     type="text"
-                    half
                 />
                 <Input
                     name="lastname"
                     title="Last name"
                     register={register}
-                    errors={errors?.["lastname"]?.message}
+                    errors={errors?.["lastname"]?.message as string}
                     placeholder="Doe"
                     type="text"
-                    hald
                 />
                 <Input
                     name="email"
                     title="Email"
                     register={register}
-                    errors={errors?.["email"]?.message}
+                    errors={errors?.["email"]?.message as string}
                     placeholder="joedow@gmail.com"
                     type="text"
                 />
@@ -102,7 +100,7 @@ const Register = () => {
                     name="password"
                     title="Password"
                     register={register}
-                    errors={errors?.["password"]?.message}
+                    errors={errors?.["password"]?.message as string}
                     placeholder="******"
                     type="password"
                 />
@@ -110,7 +108,7 @@ const Register = () => {
                     name="confirm-password"
                     title="Confirm password"
                     register={register}
-                    errors={errors?.["confirm-password"]?.message}
+                    errors={errors?.["confirm-password"]?.message as string}
                     placeholder="******"
                     type="password"
                 />

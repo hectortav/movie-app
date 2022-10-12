@@ -64,7 +64,7 @@ const Create = () => {
                     name="title"
                     title="Title"
                     register={register}
-                    errors={errors?.["title"]?.message}
+                    errors={errors?.["title"]?.message as string}
                     placeholder="Your movie title"
                     type="text"
                 />
@@ -72,7 +72,7 @@ const Create = () => {
                     name="description"
                     title="description"
                     register={register}
-                    errors={errors?.["description"]?.message}
+                    errors={errors?.["description"]?.message as string}
                     placeholder="Your description"
                     type="text"
                     multiline

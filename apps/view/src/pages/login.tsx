@@ -64,7 +64,7 @@ const Login = () => {
                     name="email"
                     title="Email"
                     register={register}
-                    errors={errors?.["email"]?.message}
+                    errors={errors?.["email"]?.message as string}
                     placeholder="joedow@gmail.com"
                     type="text"
                 />
@@ -72,7 +72,7 @@ const Login = () => {
                     name="password"
                     title="Password"
                     register={register}
-                    errors={errors?.["password"]?.message}
+                    errors={errors?.["password"]?.message as string}
                     placeholder="******"
                     type="password"
                 />

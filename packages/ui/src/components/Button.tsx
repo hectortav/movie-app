@@ -5,7 +5,7 @@ interface ButtonProps
         React.ButtonHTMLAttributes<HTMLButtonElement>,
         HTMLButtonElement
     > {
-    activee: boolean
+    active?: boolean
 }
 
 const Button: React.FC<ButtonProps> = (props) => {
