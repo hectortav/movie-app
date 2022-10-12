@@ -78,6 +78,15 @@ const Login = () => {
                 />
 
                 <Button type="submit">Login</Button>
+                <div className="mt-4 text-right">
+                    No account yet?{" "}
+                    <a
+                        href="/register"
+                        className="no-underline hover:underline"
+                    >
+                        Register
+                    </a>
+                </div>
             </form>
         </div>
     )

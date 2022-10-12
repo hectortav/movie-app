@@ -60,18 +60,29 @@ export const getHydratedMovies = async ({
     sort,
     viewerId,
 }: GetHydratedMoviesProps = {}): Promise<HydratedMovie[]> => {
+    let viewerSelect = Prisma.sql`SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END)::int AS hates`
+    let viewerJoin = Prisma.empty
+    let viewerGroup = Prisma.sql`GROUP BY m.id, u."firstname", u."lastname"`
+    if (viewerId) {
+        console.log({ viewerId })
+        viewerSelect = Prisma.sql`
+            SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END)::int AS hates, 
+            uv."vote" as "myVote", m."creatorId" = ${viewerId} as "isMine" 
+        `
+        viewerJoin = Prisma.sql`LEFT JOIN "UserVote" uv ON uv."movieId" = m.id AND uv."userId" = ${viewerId}`
+        viewerGroup = Prisma.sql`GROUP BY m.id, u."firstname", u."lastname", "myVote", "isMine"`
+    }
     const orderBy = generateOrderBy(sort?.param, sort?.order)
     return prisma.$queryRaw<HydratedMovie[]>`
-        SELECT m.* , m."createdAt" AS "createdAt", u."firstname", u."lastname", 
+        SELECT m.* , m."createdAt" AS "createdAt", u."firstname", u."lastname",
             SUM(CASE WHEN v."vote" = 'LIKES' THEN 1 ELSE 0 END)::int AS likes,
-            SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END)::int AS hates,
-            CASE WHEN v."userId" = ${viewerId} THEN v."vote" ELSE NULL END as "myVote",
-            CASE WHEN m."creatorId" = ${viewerId} THEN true ELSE false END as "isMine"
+            ${viewerSelect}
         FROM "Movie" m
         INNER JOIN "User" u
-            ON m."creatorId" = u.id
+            ON m."creatorId" = u.id 
         LEFT JOIN "UserVote" v 
             ON v."movieId" = m.id
+        ${viewerJoin}
         ${
             movieId !== undefined
                 ? Prisma.sql`WHERE m.id = ${movieId}`
@@ -79,7 +90,7 @@ export const getHydratedMovies = async ({
                 ? Prisma.sql`WHERE m."creatorId" = ${sort.userId}`
                 : Prisma.empty
         }
-        GROUP BY m.id, u."firstname", u."lastname", v."userId", v."vote"
+        ${viewerGroup}
         ${orderBy !== undefined ? orderBy : Prisma.empty}
         ${limit !== undefined ? Prisma.sql`LIMIT ${limit}` : Prisma.empty}
     `

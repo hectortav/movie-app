@@ -45,7 +45,6 @@ export default function Web() {
 
     const { mutate } = useMutation(vote, {
         onSuccess: () => {
-            // should update cache
             queryClient.invalidateQueries(["movies"])
             refetch()
         },
@@ -64,10 +63,10 @@ export default function Web() {
             <SortButtons />
             <div className="h-[2rem]" />
             <section className="flex flex-col items-center justify-center">
-                {data.data.map((movie: Record<string, string | number>) => (
+                {data?.data?.map((movie: Record<string, string | number>) => (
                     //@ts-ignore
                     <Card
-                        key={movie.title}
+                        key={movie.id}
                         {...movie}
                         style={{ marginBottom: "1rem" }}
                         onLike={() =>

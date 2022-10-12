@@ -37,22 +37,26 @@ const Card: React.FC<CardProps> = (props) => {
         isMine,
         myVote,
     } = props
-
+    console.log({ myVote, isMine })
     return (
         <div className={className} style={style}>
             <div
                 className={`px-6 py-4 ${isMine && "border-2 border-blue-300"}`}
             >
                 <div className="mb-2 text-xl font-bold">{title}</div>
-                <div className="text-l my-2">
-                    Posted by{" "}
-                    <a
-                        href={`?userId=${creatorId}`}
-                        className="text-sky-500 no-underline hover:underline"
-                    >
-                        {`${firstname} ${lastname}`}
-                    </a>{" "}
-                    {toSocialMediaDate(createdAt)}
+                <div className="text-l my-2 md:flex">
+                    <div>
+                        Posted by{" "}
+                        <a
+                            href={`?userId=${creatorId}`}
+                            className="text-sky-500 no-underline hover:underline"
+                        >
+                            {`${firstname} ${lastname}`}
+                        </a>
+                    </div>
+                    <div className="ml-auto text-right">
+                        {toSocialMediaDate(createdAt)}
+                    </div>
                 </div>
                 <p className="text-base text-gray-700">{description} </p>
                 <div className="text-l my-2 flex items-center justify-center font-mono">

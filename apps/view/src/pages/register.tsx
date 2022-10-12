@@ -113,6 +113,12 @@ const Register = () => {
                     type="password"
                 />
                 <Button type="submit">Register</Button>
+                <div className="mt-4 text-right">
+                    Already have an account?{" "}
+                    <a href="/login" className="no-underline hover:underline">
+                        Login
+                    </a>
+                </div>
             </form>
         </div>
     )
