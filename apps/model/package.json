@@ -18,6 +18,7 @@
     "dependencies": {
         "@prisma/client": "^4.4.0",
         "argon2": "^0.29.1",
+        "validation-n-types": "*",
         "uuid": "^9.0.0"
     },
     "devDependencies": {
@@ -33,7 +34,6 @@
         "prisma": "^4.4.0",
         "ts-jest": "^29.0.3",
         "tsconfig": "*",
-        "validation-n-types": "*",
         "typescript": "^4.5.3"
     }
 }

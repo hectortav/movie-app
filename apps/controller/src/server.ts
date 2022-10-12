@@ -6,6 +6,7 @@ import morgan from "morgan"
 import connectRedis from "connect-redis"
 import { userRoute, movieRoute } from "./routes"
 import { redis } from "./lib"
+import { rateLimiter } from "./middleware"
 
 require("dotenv").config()
 
@@ -17,7 +18,7 @@ app.use(helmet())
 app.disable("x-powered-by")
 app.use(
     cors({
-        origin: "http://localhost:3000",
+        origin: process.env.CORS_ORIGIN,
         credentials: true,
     })
 )
@@ -44,6 +45,8 @@ app.use(
         },
     })
 )
+
+app.use(rateLimiter)
 
 app.use("/user", userRoute)
 app.use("/movies", movieRoute)

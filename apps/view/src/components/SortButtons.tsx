@@ -60,6 +60,7 @@ const SortButtons = () => {
     return (
         <div>
             <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-8">
+                {/* @ts-ignore */}
                 <Button
                     onClick={() => onClick("likes")}
                     //@ts-ignore
@@ -74,6 +75,7 @@ const SortButtons = () => {
                         />
                     </>
                 </Button>
+                {/* @ts-ignore */}
                 <Button
                     onClick={() => onClick("hates")}
                     //@ts-ignore
@@ -88,6 +90,7 @@ const SortButtons = () => {
                         />
                     </>
                 </Button>
+                {/* @ts-ignore */}
                 <Button
                     onClick={() => onClick("createdAt")}
                     //@ts-ignore
