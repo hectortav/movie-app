@@ -61,12 +61,14 @@ export const getHydratedMovies = async ({
 }: GetHydratedMoviesProps = {}): Promise<HydratedMovie[]> => {
     const orderBy = generateOrderBy(sort?.param, sort?.order)
     return prisma.$queryRaw<HydratedMovie[]>`
-        SELECT m.* , m."createdAt" AS "createdAt",
+        SELECT m.* , m."createdAt" AS "createdAt", u."firstname", u."lastname",
             SUM(CASE WHEN v."vote" = 'LIKES' THEN 1 ELSE 0 END)::int AS likes,
             SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END)::int AS hates
         FROM "Movie" m
+        INNER JOIN "User" u
+            ON m."creatorId" = u.id
         LEFT JOIN "UserVote" v 
-        ON v."movieId" = m.id
+            ON v."movieId" = m.id
         ${
             movieId !== undefined
                 ? Prisma.sql`WHERE m.id = ${movieId}`
@@ -74,7 +76,7 @@ export const getHydratedMovies = async ({
                 ? Prisma.sql`WHERE m."creatorId" = ${creatorId}`
                 : Prisma.empty
         }
-        GROUP BY m.id
+        GROUP BY m.id, u."firstname", u."lastname"
         ${orderBy !== undefined ? orderBy : Prisma.empty}
         ${limit !== undefined ? Prisma.sql`LIMIT ${limit}` : Prisma.empty}
     `

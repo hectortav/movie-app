@@ -115,6 +115,7 @@ export const getMoviesByCreator = async (
     try {
         v.id.parse(creatorId)
         const movies: HydratedMovie[] = await getHydratedMovies({ creatorId })
+
         response.data = movies
         if (!movies) {
             response.errors.push({
@@ -132,18 +133,20 @@ export const getMoviesByCreator = async (
     }
 }
 
-export const getAllMoviesSortedBy = async ({
-    param,
-    order,
-}: MovieSortProps): Promise<ModelResponseType<HydratedMovie[]>> => {
+export const getAllMoviesSortedBy = async (
+    { param, order }: MovieSortProps,
+    creatorId?: Movie["creatorId"]
+): Promise<ModelResponseType<HydratedMovie[]>> => {
     let response: ModelResponseType<HydratedMovie[]> = {
         data: null,
         errors: [],
     }
     try {
-        v.movieSortPropsModelValidator.parse({ param, order })
+        param && order && v.movieSortPropsModelValidator.parse({ param, order })
+        creatorId && v.id.parse(creatorId)
         const movies: HydratedMovie[] = await getHydratedMovies({
-            sort: { param, order },
+            sort: param && order ? { param, order } : undefined,
+            creatorId,
         })
 
         response.data = movies

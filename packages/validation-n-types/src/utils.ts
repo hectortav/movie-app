@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { ModelError } from "./index.d"
+import { ModelError } from "./types"
 
 export const catchZodError = (e: z.ZodError): ModelError[] => {
     const errors: ModelError[] = []
