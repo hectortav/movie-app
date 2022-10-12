@@ -16,6 +16,7 @@ WORKDIR /app
 
 # First install dependencies (as they change less often)
 COPY .gitignore .gitignore
+
 COPY .env .env
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
