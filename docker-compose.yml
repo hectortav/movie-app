@@ -26,5 +26,25 @@ services:
         restart: always
         networks:
             - net
+    controller:
+        build:
+            context: .
+            dockerfile: ./apps/controller/Dockerfile
+        restart: always
+        networks:
+            - net
+    nginx:
+        build:
+            context: ./nginx
+            dockerfile: ./nginx/Dockerfile
+        restart: always
+        ports:
+            - 80:80
+            - 443:443
+        networks:
+            - net
+        links:
+            - view
+            - controller
 networks:
     net:

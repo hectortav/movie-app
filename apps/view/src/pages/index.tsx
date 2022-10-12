@@ -52,7 +52,7 @@ export default function Web() {
 
     React.useEffect(() => {
         refetch()
-    }, [router.query])
+    }, [router.query, refetch])
 
     if (isLoading) {
         return <div>Loading...</div>

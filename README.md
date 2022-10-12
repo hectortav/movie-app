@@ -39,4 +39,9 @@ cd workable-assignment
 # run in development
 yarn
 yarn dev
+
+# reun production
+yarn
+yarn build
+yarn start
 ```
