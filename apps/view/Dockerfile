@@ -5,7 +5,9 @@ FROM node AS builder
 RUN apt-get update
 # Set working directory
 WORKDIR /app
-RUN yarn global add turbo@1.5.6
+
+RUN yarn global add turbo
+
 COPY . .
 RUN turbo prune --scope=view --docker
 
@@ -18,11 +20,16 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
+
 RUN yarn install
 
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
+
+
+ENV NEXT_PUBLIC_API /api
+
 RUN yarn turbo run build --filter=view...
 
 FROM node AS runner
@@ -38,7 +45,14 @@ COPY --from=installer /app/apps/view/package.json .
 
 # Automatically leverage output traces to reduce image size 
 # https://nextjs.org/docs/advanced-features/output-file-tracing
+
+COPY --from=installer --chown=nextjs:nodejs /app/apps/view/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/view/.next/static ./apps/view/.next/static
+
 # COPY --from=installer --chown=nextjs:nodejs /app/apps/view/.next/standalone ./
-# COPY --from=installer --chown=nextjs:nodejs /app/apps/view/.next/static ./apps/view/.next/static
+# COPY --from=installer --chown=nextjs:nodejs /app/apps/view/.next/static ./apps/view/.next/standalone/.next/static
+# COPY --from=installer --chown=nextjs:nodejs /app/apps/view/public ./apps/view/.next/standalone/public
+
+EXPOSE 3000
 
 CMD node apps/view/server.js

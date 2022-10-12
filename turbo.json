@@ -11,6 +11,9 @@
         "controller#build": {
             "env": ["SESSION_SECRET", "PORT", "DATABASE_URL", "REDIS_HOST"]
         },
+        "view#build": {
+            "env": ["NEXT_PUBLIC_API"]
+        },
         "lint": {
             "outputs": []
         },
@@ -31,7 +34,11 @@
         },
         "controller#test": {
             "env": ["SESSION_SECRET", "PORT", "DATABASE_URL", "REDIS_HOST"]
+        },
+        "view#test": {
+            "env": ["NEXT_PUBLIC_API"]
         }
     },
-    "globalEnv": ["NODE_ENV"]
+    "globalEnv": ["NODE_ENV"],
+    "globalDependencies": ["NEXT_PUBLIC_API"]
 }

@@ -8,7 +8,7 @@ import { ModelError } from "validation-n-types"
 
 const createUser = async ({ firstname, lastname, email, password }: any) => {
     const data = await axios.post(
-        "http://localhost:8080/user/register",
+        `${process.env.NEXT_PUBLIC_API}/user/register`,
         {
             firstname,
             lastname,

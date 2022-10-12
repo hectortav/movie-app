@@ -31,11 +31,15 @@ services:
             context: .
             dockerfile: ./apps/controller/Dockerfile
         restart: always
+        environment:
+            REDIS_HOST: redis
+            DATABASE_URL: postgresql://postgres:postgres@db:5432/movies
+            CORS_ORIGIN: view
         networks:
             - net
     nginx:
         build:
-            context: ./nginx
+            context: .
             dockerfile: ./nginx/Dockerfile
         restart: always
         ports:

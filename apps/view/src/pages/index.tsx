@@ -12,7 +12,7 @@ interface FetchMoviesProps {
 }
 
 const fetchMovies = async ({ param, order, userId }: FetchMoviesProps) => {
-    const { data } = await axios.get("http://localhost:8080/movies", {
+    const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API}/movies`, {
         params: {
             param,
             order,
@@ -25,7 +25,7 @@ const fetchMovies = async ({ param, order, userId }: FetchMoviesProps) => {
 
 const vote = async ({ id, vote }: { id: string; vote: "LIKES" | "HATES" }) => {
     const { data } = await axios.post(
-        `http://localhost:8080/movies/${id}`,
+        `${process.env.NEXT_PUBLIC_API}/movies/${id}`,
         {
             vote,
         },

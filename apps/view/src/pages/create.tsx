@@ -8,7 +8,7 @@ import { ModelError } from "validation-n-types"
 
 const createMovie = async ({ title, description }: CreateFormProps) => {
     const data = await axios.post(
-        "http://localhost:8080/movies",
+        `${process.env.NEXT_PUBLIC_API}/movies`,
         {
             title,
             description,
