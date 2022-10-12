@@ -2,8 +2,6 @@ import {
     createUser,
     createMovie,
     getMovieById,
-    getAllMovies,
-    getMoviesByCreator,
     getAllMoviesSortedBy,
     updateMovie,
     deleteMovie,
@@ -95,7 +93,7 @@ test("get movie by Id", async () => {
 })
 
 test("get all movies", async () => {
-    const dbMovies = await getAllMovies()
+    const dbMovies = await getAllMoviesSortedBy({})
     expect(dbMovies.data?.length).toBeGreaterThanOrEqual(2)
 })
 
@@ -192,11 +190,6 @@ test("get all movies sort by createdAt ascending", async () => {
     )
 })
 
-test("get movies by creator with one item", async () => {
-    const dbMovies = await getMoviesByCreator(user.id)
-    expect(dbMovies.data?.length).toEqual(1)
-})
-
 test("update movie", async () => {
     const dbMovie = await updateMovie({
         id: movie.id,
@@ -238,7 +231,7 @@ test("update movie that doesn't exist", async () => {
 })
 
 test("get movies by creator with no items", async () => {
-    const dbMovies = await getMoviesByCreator(user.id)
+    const dbMovies = await getAllMoviesSortedBy({ userId: user.id })
     expect(dbMovies.data?.length).toEqual(0)
 })
 

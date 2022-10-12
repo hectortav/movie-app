@@ -1,5 +1,4 @@
 import { Router, Response } from "express"
-import { get } from "http"
 import { createUser, verifyUserWithEmailPassword, getUserById } from "model"
 import * as v from "validation-n-types"
 import { validateBody, authorized } from "../middleware"

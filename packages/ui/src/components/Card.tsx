@@ -14,6 +14,10 @@ interface CardProps
     likes: number
     hates: number
     createdAt: string
+    onLike: () => void
+    onHate: () => void
+    isMine: boolean
+    myVote: "LIKES" | "HATES" | null
 }
 
 const Card: React.FC<CardProps> = (props) => {
@@ -28,11 +32,17 @@ const Card: React.FC<CardProps> = (props) => {
         likes,
         hates,
         createdAt,
+        onLike,
+        onHate,
+        isMine,
+        myVote,
     } = props
 
     return (
         <div className={className} style={style}>
-            <div className="px-6 py-4">
+            <div
+                className={`px-6 py-4 ${isMine && "border-2 border-blue-300"}`}
+            >
                 <div className="mb-2 text-xl font-bold">{title}</div>
                 <div className="text-l my-2">
                     Posted by{" "}
@@ -45,8 +55,32 @@ const Card: React.FC<CardProps> = (props) => {
                     {toSocialMediaDate(createdAt)}
                 </div>
                 <p className="text-base text-gray-700">{description} </p>
-                <div className="text-l my-2">
-                    {likes} likes | {hates} hates
+                <div className="text-l my-2 flex items-center justify-center font-mono">
+                    {!isMine && (
+                        <button onClick={() => onLike()}>
+                            <span
+                                className={`text-3xl ${
+                                    myVote !== "LIKES" && "grayscale"
+                                }`}
+                            >
+                                😍
+                            </span>
+                        </button>
+                    )}
+                    <div className="mx-2">
+                        {likes} likes | {hates} hates
+                    </div>
+                    {!isMine && (
+                        <button onClick={() => onHate()}>
+                            <span
+                                className={`text-3xl ${
+                                    myVote !== "HATES" && "grayscale"
+                                }`}
+                            >
+                                😡
+                            </span>
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

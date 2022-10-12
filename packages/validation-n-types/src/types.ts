@@ -11,4 +11,5 @@ export interface ModelResponseType<T> {
 export interface MovieSortProps {
     param?: "likes" | "hates" | "createdAt"
     order?: "asc" | "desc"
+    userId?: string
 }
