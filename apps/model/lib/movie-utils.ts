@@ -64,7 +64,6 @@ export const getHydratedMovies = async ({
     let viewerJoin = Prisma.empty
     let viewerGroup = Prisma.sql`GROUP BY m.id, u."firstname", u."lastname"`
     if (viewerId) {
-        console.log({ viewerId })
         viewerSelect = Prisma.sql`
             SUM(CASE WHEN v."vote" = 'HATES' THEN 1 ELSE 0 END)::int AS hates, 
             uv."vote" as "myVote", m."creatorId" = ${viewerId} as "isMine" 
