@@ -2,41 +2,35 @@ import { Router, Request, Response } from "express"
 import * as v from "validation-n-types"
 import { MovieSortProps } from "validation-n-types"
 import { authorized, validateQuery, validateBody } from "../middleware"
-import {
-    getAllMovies,
-    createMovie,
-    createUserVote,
-    getAllMoviesSortedBy,
-} from "model"
+import { createMovie, createUserVote, getAllMoviesSortedBy } from "model"
 import type { RequestWSession } from "../types"
 const router = Router()
 
 router.get(
     "/",
-    validateQuery("movies", v.movieSortPropsValidator),
-    async (req: Request, res: Response) => {
-        const { param, order } = req.query
-        let movies
-        if (param && order) {
-            movies = await getAllMoviesSortedBy({
-                param: param,
-                order: order,
-            } as MovieSortProps)
-        } else {
-            movies = await getAllMovies()
-        }
+    validateQuery(v.movieSortPropsValidator),
+    async (req: RequestWSession, res: Response) => {
+        const { param, order, userId } = req.query
+        const movies = await getAllMoviesSortedBy(
+            {
+                param,
+                order,
+                userId,
+            } as MovieSortProps,
+            req?.session?.userId as string
+        )
         if (movies.errors.length > 0) {
-            res.status(422).json({ movies })
+            res.status(422).json({ ...movies })
             return
         }
-        res.status(200).json({ movies })
+        res.status(200).json({ ...movies })
     }
 )
 
 router.post(
     "/",
     authorized,
-    validateBody("movie", v.movieInputValidator),
+    validateBody(v.movieInputValidator),
     async (req: RequestWSession, res: Response) => {
         const { title, description } = req.body
         const movie = await createMovie({
@@ -45,17 +39,17 @@ router.post(
             creatorId: req.session.userId as string,
         })
         if (movie.errors.length > 0) {
-            res.status(422).json({ movie })
+            res.status(422).json({ ...movie })
             return
         }
-        res.status(200).json({ movie })
+        res.status(200).json({ ...movie })
     }
 )
 
 router.post(
     "/:movieId",
     authorized,
-    validateBody("userVote", v.userVoteInputValidator),
+    validateBody(v.userVoteInputValidator),
     async (req: RequestWSession, res: Response) => {
         const { vote } = req.body
         const { movieId } = req.params
@@ -65,10 +59,10 @@ router.post(
             vote,
         })
         if (userVote.errors.length > 0) {
-            res.status(422).json({ userVote })
+            res.status(422).json({ ...userVote })
             return
         }
-        res.status(200).json({ userVote })
+        res.status(200).json({ ...userVote })
     }
 )
 

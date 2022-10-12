@@ -7,6 +7,7 @@ import {
     HydratedMovie,
     MovieSortProps,
     ModelResponseType,
+    User,
 } from "../types"
 import { prisma, getHydratedMovies } from "../lib"
 
@@ -82,68 +83,19 @@ export const getMovieById = async (
     }
 }
 
-export const getAllMovies = async (): Promise<
-    ModelResponseType<HydratedMovie[]>
-> => {
-    let response: ModelResponseType<HydratedMovie[]> = {
-        data: null,
-        errors: [],
-    }
-    try {
-        const movies: HydratedMovie[] = await getHydratedMovies()
-        response.data = movies
-        if (!movies) {
-            response.errors.push({
-                field: "movieId",
-                message: "could not get movies",
-            })
-        }
-        return response
-    } catch (e: any) {
-        /* istanbul ignore next */
-        throw e
-    }
-}
-
-export const getMoviesByCreator = async (
-    creatorId: Movie["creatorId"]
+export const getAllMoviesSortedBy = async (
+    { param, order, userId }: MovieSortProps,
+    viewerId?: User["id"]
 ): Promise<ModelResponseType<HydratedMovie[]>> => {
     let response: ModelResponseType<HydratedMovie[]> = {
         data: null,
         errors: [],
     }
     try {
-        v.id.parse(creatorId)
-        const movies: HydratedMovie[] = await getHydratedMovies({ creatorId })
-        response.data = movies
-        if (!movies) {
-            response.errors.push({
-                field: "movieId",
-                message: "could not get movies",
-            })
-        }
-        return response
-    } catch (e: any) {
-        const verrors = v.catchZodError(e)
-        /* prettier-ignore */
-        if (verrors.length > 0) { return { data: response.data, errors: [...response.errors, ...verrors], } }
-        /* istanbul ignore next */
-        throw e
-    }
-}
-
-export const getAllMoviesSortedBy = async ({
-    param,
-    order,
-}: MovieSortProps): Promise<ModelResponseType<HydratedMovie[]>> => {
-    let response: ModelResponseType<HydratedMovie[]> = {
-        data: null,
-        errors: [],
-    }
-    try {
-        v.movieSortPropsModelValidator.parse({ param, order })
+        v.movieSortPropsModelValidator.parse({ param, order, userId })
         const movies: HydratedMovie[] = await getHydratedMovies({
-            sort: { param, order },
+            sort: { param, order, userId },
+            viewerId,
         })
 
         response.data = movies

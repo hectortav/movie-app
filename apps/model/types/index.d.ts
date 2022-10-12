@@ -30,7 +30,9 @@ export type HydratedMovie = MovieIdInput & {
     likes: number
     hates: number
     createdAt: Date
-    creatorName: string
+    firstname: string
+    lastname: string
+    myVote: any
 }
 export type MovieUpdateInput = Partial<MovieIdInput> & { id: Movie["id"] }
 

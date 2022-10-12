@@ -78,20 +78,19 @@
 
 ## Break into subproblems
 
-
 -   [x] Connect & initialize DBs
--   [ ] Create express server
+-   [x] Create express server
 -   [ ] Connect frontend to backend
--   [ ] Create register
--   [ ] Create login
--   [ ] Create session & auth middleware
--   [ ] Auth state frontend
--   [ ] Create movie form
--   [ ] Create movies
--   [ ] Display all movies
+-   [x] Create register
+-   [x] Create login
+-   [x] Create session & auth middleware
+-   [x] Auth state frontend
+-   [x] Create movie form
+-   [x] Create movies
+-   [x] Display all movies
 -   [ ] Like/Hate a movie
--   [ ] Sort movies
--   [ ] View movies by user
+-   [x] Sort movies
+-   [x] View movies by user
 -   [ ] Dockerize
 -   [ ] Deploy
 
@@ -137,6 +136,22 @@
 | createdAt | DateTime        |
 | updatedAt | DateTime        |
 
-## Describe API
+## Installation guide
 
-Describe API with TypeScript types.
+```bash
+git clone git@github.com:hectortav/workable-assignment.git
+
+# install docker
+sudo apt-get update -y;
+sudo apt-get upgrade -y;
+sudo apt install docker.io -y;
+systemctl start docker;
+systemctl enable docker;
+
+# install docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose --version
+
+cd workable-assignment
+```

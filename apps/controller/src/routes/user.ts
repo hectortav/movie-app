@@ -1,15 +1,14 @@
 import { Router, Response } from "express"
-import { createUser, verifyUserWithEmailPassword } from "model"
+import { createUser, verifyUserWithEmailPassword, getUserById } from "model"
 import * as v from "validation-n-types"
-import { validateBody } from "../middleware"
-import { formatErrors } from "../lib"
+import { validateBody, authorized } from "../middleware"
 import type { RequestWSession } from "../types"
 
 const router = Router()
 
 router.post(
     "/register",
-    validateBody("user", v.userInputValidator),
+    validateBody(v.userInputValidator),
     async (req: RequestWSession, res: Response) => {
         const { firstname, lastname, email, password } = req.body
         const user = await createUser({
@@ -20,15 +19,14 @@ router.post(
         })
         if (user.errors.length > 0) {
             return res.status(403).json({
-                user: { errors: formatErrors(user.errors), data: null },
+                errors: user.errors,
+                data: null,
             })
         }
         if (!user.data) {
             return res.status(500).json({
-                user: {
-                    errors: [{ field: "userId", message: "unknown error" }],
-                    data: null,
-                },
+                errors: [{ field: "userId", message: "unknown error" }],
+                data: null,
             })
         }
         req.session.userId = user.data.id
@@ -38,17 +36,18 @@ router.post(
 
 router.post(
     "/login",
-    validateBody("user", v.userLoginValidator),
+    validateBody(v.userLoginValidator),
     async (req: RequestWSession, res: Response) => {
         const { email, password } = req.body
         const userId = await verifyUserWithEmailPassword(email, password)
         if (userId.errors.length > 0) {
-            res.status(403).send({ errors: formatErrors(userId.errors) })
+            res.status(403).send({ errors: userId.errors, data: null })
             return
         }
         if (!userId.data) {
             res.status(500).json({
-                errors: { field: "userId", message: "unknown error" },
+                errors: [{ field: "userId", message: "unknown error" }],
+                data: null,
             })
             return
         }
@@ -73,7 +72,16 @@ router.post("/logout", async (req: RequestWSession, res: Response) => {
         res.status(200).json()
         return
     }
-    res.status(500).send({ field: "userId", message: "unknown error" })
+    res.status(500).send({
+        errors: [{ field: "userId", message: "unknown error" }],
+        data: null,
+    })
+})
+
+router.get("/me", authorized, async (req: RequestWSession, res: Response) => {
+    const response = await getUserById(req.session.userId as string)
+    res.status(200).json(response)
+    return
 })
 
 export default router

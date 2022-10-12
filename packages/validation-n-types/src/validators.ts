@@ -78,11 +78,11 @@ export const movieSortPropsModelValidator = z
     .object({
         param: z.enum(["likes", "hates", "createdAt"]),
         order: z.enum(["asc", "desc"]),
+        userId: id,
     })
-    .strict()
-export const movieSortPropsValidator = movieSortPropsModelValidator
-    .partial({ param: true, order: true })
-    .passthrough()
+    .partial({ param: true, order: true, userId: true })
+export const movieSortPropsValidator =
+    movieSortPropsModelValidator.passthrough()
 
 export const userVoteInputModelValidator = userVoteInputValidator
     .extend({
