@@ -40,13 +40,13 @@ const SortButtons = () => {
         if (param && order) {
             router.replace({ query: { ...router.query, param, order } })
         }
-    }, [param, order, router])
+    }, [param, order])
 
     React.useEffect(() => {
         setParam(router.query.param as unknown as Param)
         setOrder(router.query.order as unknown as Order)
         queryClient.invalidateQueries(["movies"])
-    }, [router.query, queryClient])
+    }, [router.query])
 
     const onClick = (p: Param) => {
         if (param === p) {
