@@ -29,6 +29,7 @@ const Header = () => {
     const [right, setRight] = React.useState<React.ReactNode>(
         <div className="flex">
             <a href="/register">
+                {/* @ts-ignore */}
                 <Button>Register</Button>
             </a>
         </div>
@@ -49,6 +50,7 @@ const Header = () => {
                             <button onClick={() => mutate()}>logout</button>
                         </div>
                     </div>
+                    {/* @ts-ignore */}
                     <Button
                         style={{ fontSize: "2rem" }}
                         onClick={() => router.push("/create")}

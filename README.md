@@ -1,5 +1,10 @@
 # Workable assignment
 
+## Info
+
+The project should be live [here](178.62.192.72) running on Digital Ocean. (Contact me otherwise).
+It is deployed using docker, docker-compose and nginx.
+
 ## Tech stack
 
 -   TypeScript
@@ -38,6 +43,8 @@ cd workable-assignment
 cd apps/model && npx prisma generate
 cd ../../
 
+# complete the .env file
+
 # run in development
 yarn
 yarn dev
@@ -48,4 +55,7 @@ yarn dev
 yarn
 yarn build
 yarn start
+
 ```
+
+You can also run the project by running `docker-compose up`
