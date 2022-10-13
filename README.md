@@ -2,7 +2,8 @@
 
 ## Info
 
-The project should be live [here](178.62.192.72) running on Digital Ocean. (Contact me otherwise).
+
+The project should be live [https://workable.index-zr0.com/](https://workable.index-zr0.com/) running on Digital Ocean. (Contact me otherwise).
 It is deployed using docker, docker-compose and nginx.
 
 ## Tech stack
