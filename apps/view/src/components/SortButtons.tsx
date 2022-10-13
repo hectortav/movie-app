@@ -35,6 +35,7 @@ const SortButtons = () => {
     const queryClient = useQueryClient()
     const [param, setParam] = React.useState<Param>(undefined)
     const [order, setOrder] = React.useState<Order>(undefined)
+    const [user, setUser] = React.useState<boolean>(false)
 
     React.useEffect(() => {
         if (param && order) {
@@ -45,6 +46,11 @@ const SortButtons = () => {
     React.useEffect(() => {
         setParam(router.query.param as unknown as Param)
         setOrder(router.query.order as unknown as Order)
+        if (router.query.userId !== undefined) {
+            setUser(true)
+        } else {
+            setUser(false)
+        }
         queryClient.invalidateQueries(["movies"])
     }, [router.query])
 
@@ -59,7 +65,23 @@ const SortButtons = () => {
 
     return (
         <div>
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-8">
+            <div
+                className={`grid grid-cols-1 gap-2 ${
+                    user ? "md:grid-cols-4" : "md:grid-cols-3"
+                } md:gap-8`}
+            >
+                {user && (
+                    <Button
+                        onClick={() => {
+                            const { userId, ...params } = router.query
+                            router.replace({
+                                query: { ...params },
+                            })
+                        }}
+                    >
+                        All users
+                    </Button>
+                )}
                 {/* @ts-ignore */}
                 <Button
                     onClick={() => onClick("likes")}

@@ -39,9 +39,6 @@ const vote = async ({ id, vote }: { id: string; vote: "LIKES" | "HATES" }) => {
 export default function Web() {
     const router = useRouter()
     const queryClient = useQueryClient()
-    const { data, isLoading, refetch } = useQuery(["movies"], () =>
-        fetchMovies({ ...router.query } as unknown as FetchMoviesProps)
-    )
 
     const { mutate } = useMutation(vote, {
         onSuccess: () => {
@@ -53,6 +50,11 @@ export default function Web() {
     React.useEffect(() => {
         refetch()
     }, [router.query])
+
+    const { data, isLoading, refetch } = useQuery(
+        ["movies", router.query],
+        () => fetchMovies(router.query as unknown as FetchMoviesProps)
+    )
 
     if (isLoading) {
         return <div>Loading...</div>
