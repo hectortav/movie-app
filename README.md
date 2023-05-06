@@ -1,10 +1,9 @@
-# Workable assignment
+# Movie app
 
 ## Info
 
 
-The project should be live [https://workable.index-zr0.com/](https://workable.index-zr0.com/) running on Digital Ocean. (Contact me otherwise).
-It is deployed using docker, docker-compose and nginx.
+The project is deployed using docker, docker-compose and nginx.
 
 ## Tech stack
 
@@ -26,7 +25,7 @@ It is deployed using docker, docker-compose and nginx.
 ## Installation guide
 
 ```bash
-git clone git@github.com:hectortav/workable-assignment.git
+git clone git@github.com:hectortav/movie-app.git
 
 # install docker
 sudo apt-get update -y;
@@ -40,7 +39,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
-cd workable-assignment
+cd movie-app
 cd apps/model && npx prisma generate
 cd ../../
 
