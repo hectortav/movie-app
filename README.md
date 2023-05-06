@@ -1,5 +1,7 @@
 # Movie app
 
+![Landing page preview](https://raw.githubusercontent.com/hectortav/movie-app/main/assets/home.png)
+
 ## Info
 
 
