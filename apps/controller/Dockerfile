@@ -39,5 +39,21 @@ RUN yarn global add ts-node
 RUN yarn global add pm2
 
 EXPOSE 8080
+RUN ls -l apps/controller
+RUN ls -l apps/controller
+RUN ls -l apps/controller
+RUN ls -l apps/controller
+RUN ls -l apps/controller
+RUN ls -l apps/controller
+RUN ls -l apps/controller
+RUN ls -l apps/controller
+RUN ls -l apps/controller/dist
+RUN ls -l apps/controller/dist
+RUN ls -l apps/controller/dist
+RUN ls -l apps/controller/dist
+RUN ls -l apps/controller/dist
+RUN ls -l apps/controller/dist
+RUN ls -l apps/controller/dist
 
-CMD node_modules/.bin/prisma migrate deploy --schema apps/model/prisma/schema.prisma && pm2-runtime node_modules/.bin/ts-node-esm apps/controller/dist/index.js
+CMD [ "sh", "-c", "node_modules/.bin/prisma migrate deploy --schema apps/model/prisma/schema.prisma && /home/expressjs/.yarn/bin/pm2-runtime /home/expressjs/.yarn/bin/ts-node-esm apps/controller/dist/index.js"]
+

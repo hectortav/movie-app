@@ -3,8 +3,8 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "dev": "nodemon -w src --ext ts --exec ts-node-esm src/index.ts",
-        "build": "tsc --project ./",
+        "dev": "dotenv -e ../../.env nodemon -w src --ext ts --exec ts-node-esm src/index.ts",
+        "build": "dotenv -e ../../.env tsc --project ./",
         "start": "ts-node dist/index.js",
         "lint": "eslint . --ext .js,.ts --fix",
         "test:integration": "jest int",
@@ -35,6 +35,7 @@
         "@types/redis": "^4.0.11",
         "@types/supertest": "^2.0.12",
         "concurrently": "^7.4.0",
+        "dotenv-cli": "^7.2.1",
         "eslint": "7.32.0",
         "eslint-config-custom": "*",
         "jest": "^29.1.2",

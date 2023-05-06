@@ -7,9 +7,6 @@ RUN yarn global add turbo
 COPY . .
 RUN turbo prune --scope=view --docker
 
-
-
-
 FROM node AS installer
 RUN apt-get update
 WORKDIR /app
@@ -25,12 +22,8 @@ COPY turbo.json turbo.json
 
 ENV NEXT_PUBLIC_API /api
 
-RUN yarn turbo run build --filter=view...
-
-
-
-
-
+RUN yarn turbo run build --filter=ui
+RUN yarn turbo run build --filter=view
 
 FROM node AS runner
 WORKDIR /app
@@ -46,7 +39,7 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/view/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/view/.next/static ./apps/view/.next/static
 
 RUN yarn global add pm2
-
 EXPOSE 3000
 
-CMD pm2-runtime  node apps/view/server.js
+CMD [ "/home/nextjs/.yarn/bin/pm2-runtime", "apps/view/server.js" ]
+
